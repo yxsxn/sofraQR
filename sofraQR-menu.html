@@ -28,7 +28,7 @@ html.dark-mode-init #oneriFrame{background:#111820 !important;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --cream:#F2F2F2;--brown:#2C3E2D;--amber:#C8603C;--warm-gray:#7A9E78;
-  --t-bg:white;--t-header:#2C3E2D;--t-accent:#C8603C;--t-card:#F2F2F2;
+  --t-header:#2C3E2D;--t-accent:#C8603C;--t-card:#F2F2F2;
   --t-font-kat:'Oswald',sans-serif;
   --t-font-urun:'Oswald',sans-serif;
   --t-font-fiyat:'Oswald',sans-serif;
@@ -36,12 +36,13 @@ html.dark-mode-init #oneriFrame{background:#111820 !important;}
 
 body.dark-mode{
   --cream:#0A0F14;--brown:#E4F0F4;--warm-gray:rgba(228,240,244,0.45);
-  --t-bg:#0A0F14;--t-header:#111820;--t-accent:#3AAFCE;--t-card:#162028;
+  --t-header:#111820;--t-accent:#3AAFCE;--t-card:#162028;
   background:#0A0F14 !important;
+  transition:none;
 }
 body.dark-mode .item-card{background:#0A0F14;border-color:rgba(58,175,206,0.08);}
 body.dark-mode .item-name{color:#E4F0F4 !important;}
-body.dark-mode .urun-baslik{color:#E4F0F4;}
+
 
 body.dark-mode .footer{border-top:none;}
 
@@ -51,7 +52,7 @@ body.dark-mode #footerAlani .icon-box{background:rgba(58,175,206,0.12) !importan
 body.dark-mode .footer-logo{color:rgba(228,240,244,0.3);}
 body.dark-mode .detay-kapat{background:rgba(58,175,206,0.15);}
 
-body{font-family:'Montserrat',sans-serif;background:white;color:var(--brown);min-height:100vh;transition:background 0.2s,color 0.2s;}
+body{font-family:'Montserrat',sans-serif;background:white;color:var(--brown);min-height:100vh;transition:none;}
 
 .header{background:white;color:#2C3E2D;padding:18px 20px 14px;text-align:center;position:sticky;top:0;z-index:50;border-bottom:none;transition:background 0.2s,color 0.2s;}
 .header-name{font-family:var(--t-font-kat);font-size:1.4rem;font-weight:900;line-height:1.1;color:#2C3E2D;}
@@ -86,7 +87,7 @@ body.dark-mode .item-card{background:#1C2535 !important;border-color:rgba(58,175
 body.dark-mode .item-foto{background:#111820 !important;}
 body.dark-mode .item-foto-emoji{background:#111820 !important;}
 body.dark-mode .item-foto img{background:#111820;}
-body.dark-mode .urun-baslik{color:#E4F0F4 !important;background:#0A0F14;}
+
 
 body.dark-mode #oneriFrame{background:#111820 !important;border-color:rgba(58,175,206,0.1) !important;}
 body.dark-mode #katFrame{background:#111820 !important;border-color:rgba(58,175,206,0.1) !important;}
@@ -94,14 +95,17 @@ body.dark-mode .oneri-item{box-shadow:0 2px 8px rgba(0,0,0,0.3);}
 
 .kat-kart-icerik{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
 
-.urunsayfa{display:none;}
+.urunsayfa{display:none;width:100%;box-sizing:border-box;}
+body:not(.dark-mode) .urunsayfa{background:#F2F2F2;padding:8px;}
+body.dark-mode .urunsayfa{background:#111820;padding:8px;}
 .geri-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;font-size:0.85rem;font-weight:500;color:#7A9E78;cursor:pointer;background:#F2F2F2;border-radius:100px;border:0.5px solid rgba(0,0,0,0.08);margin:6px 2px 2px;transition:all 0.15s;user-select:none;}
 .geri-btn:hover{background:#E8E8E8;color:#2C3E2D;}
 .geri-btn:active{transform:scale(0.97);background:#E0E0E0;}
-body.dark-mode .geri-btn{background:#0A0F14;color:rgba(228,240,244,0.5);border-color:rgba(58,175,206,0.15);}
+body.dark-mode .geri-btn{background:#111820;color:rgba(228,240,244,0.5);border-color:rgba(58,175,206,0.15);}
 body.dark-mode .geri-btn:hover{background:#162028;color:#E4F0F4;}
 body.dark-mode .geri-btn:active{transform:scale(0.97);}
 .urun-baslik{padding:18px 20px 10px;font-family:var(--t-font-kat);font-size:1.25rem;font-weight:700;}
+body.dark-mode .urun-baslik{color:#E4F0F4 !important;background:#111820;}
 
 .item-card{background:#F7F7F7;border-radius:12px;display:flex;align-items:stretch;margin:5px 2px;overflow:hidden;border:0.5px solid rgba(0,0,0,0.06);cursor:pointer;transition:transform 0.1s;height:90px;box-shadow:0 2px 8px rgba(0,0,0,0.07);}
 .item-card:active{transform:scale(0.98);}
@@ -143,8 +147,8 @@ body.dark-mode .detay-aciklama{color:rgba(228,240,244,0.5) !important;}
 body.dark-mode .detay-fiyat{color:#3AAFCE !important;background:rgba(58,175,206,0.08) !important;border-color:rgba(58,175,206,0.25) !important;}
 body.dark-mode .detay-emoji{background:#162028 !important;}
 body.dark-mode .detay-foto{filter:brightness(0.9);}
-body.dark-mode .urunsayfa{background:#0A0F14 !important;}
-body.dark-mode .urun-baslik{color:#E4F0F4 !important;background:#0A0F14;}
+
+
 body.dark-mode .item-name{color:#E4F0F4 !important;}
 body.dark-mode .item-desc{color:rgba(228,240,244,0.4) !important;}
 body.dark-mode .item-fiyat{color:#3AAFCE !important;}
@@ -179,7 +183,7 @@ body.dark-mode #footerAlani > div > div{background:#111820 !important;}
   <div class="loading-wrap"><div class="spinner"></div></div>
 </div>
 
-<div class="urunsayfa" id="urunSayfa" style="padding:4px 2px;background:white;">
+<div class="urunsayfa" id="urunSayfa">
   <div class="geri-btn" onclick="geriKategorilere()">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
     Kategoriler
@@ -234,10 +238,10 @@ async function temaUygula(){
   const s = sablonlar[sablon] || sablonlar.klasik;
 
   const root = document.documentElement.style;
-  root.setProperty('--t-bg', s.bg);
+  // --t-bg artık kullanılmıyor
   // Dark mode aktifse body bg'yi değiştirme
   if(!document.body.classList.contains('dark-mode')){
-    document.body.style.background = 'white';
+    // body bg'ye dokunma — menuTemaDegistir hallediyor
   }
   root.setProperty('--t-header', s.header);
   root.setProperty('--t-accent', s.accent);
@@ -299,8 +303,7 @@ function kategoriListesiGoster(){
   document.getElementById('katListe').style.display='block';
   const uspg=document.getElementById('urunSayfa');
   uspg.style.display='none';
-  uspg.style.background='';
-  uspg.style.padding='';
+
   const liste = document.getElementById('katListe');
 
   if(!kategoriler.length){
@@ -371,20 +374,18 @@ function oneriGoster(){
 function kategoriAc(katAd){
   document.getElementById('katListe').style.display='none';
   document.getElementById('oneriWrap').style.display='none';
+  const isDark=document.body.classList.contains('dark-mode');
   const usp=document.getElementById('urunSayfa');
   usp.style.display='block';
-  usp.style.background=document.body.classList.contains('dark-mode')?'#0A0F14':'white';
-  usp.style.padding='8px';
   usp.style.minHeight='auto';
   document.getElementById('urunKatBaslik').textContent=katAd;
   const filtered=tumYemekler.filter(y=>y.cat===katAd);
   const liste=document.getElementById('urunListe');
+  liste.style.padding='4px';
   if(!filtered.length){
     liste.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--warm-gray);">Bu kategoride ürün yok.</div>';
     return;
   }
-  liste.style.background=document.body.classList.contains('dark-mode')?'#0A0F14':'#F2F2F2';
-  liste.style.padding='4px';
   liste.innerHTML='';
   filtered.forEach(item=>{
     const div=document.createElement('div');
@@ -409,8 +410,7 @@ function geriKategorilere(){
   document.getElementById('katListe').style.display='block';
   const uspg=document.getElementById('urunSayfa');
   uspg.style.display='none';
-  uspg.style.background='';
-  uspg.style.padding='';
+
   // Öneri şeridini tekrar göster
   if(document.getElementById('oneriWrap').children.length > 0 ||
      document.getElementById('oneriScroll').children.length > 0){
@@ -516,6 +516,7 @@ function menuTemaDegistir(tema){
     koyu.querySelector('svg').setAttribute('stroke','white');
     if(wrap){wrap.style.background='rgba(255,255,255,0.1)';wrap.style.border='0.5px solid rgba(255,255,255,0.15)';}
     localStorage.setItem('sofraQR-menu-tema','koyu');
+
   } else {
     document.body.classList.remove('dark-mode');document.body.style.background='white';
     acik.style.background='#C8852A';
@@ -524,6 +525,7 @@ function menuTemaDegistir(tema){
     koyu.querySelector('svg').setAttribute('stroke','rgba(44,26,14,0.3)');
     if(wrap){wrap.style.background='rgba(44,26,14,0.06)';wrap.style.border='0.5px solid rgba(44,26,14,0.12)';}
     localStorage.setItem('sofraQR-menu-tema','acik');
+
   }
   // Footer'ı yeniden oluştur
   if(typeof footerYukle === 'function') footerYukle();
