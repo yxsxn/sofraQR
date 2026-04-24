@@ -66,7 +66,7 @@ body.dark-mode .oneri-baslik-text{color:var(--brown);}
 body.dark-mode .kat-kart-overlay{background:rgba(0,0,0,0.45);}
 body.dark-mode .kat-kart-ad{color:white;text-shadow:0 2px 8px rgba(0,0,0,0.6);}
 body.dark-mode #urunCerceve{background:#111820 !important;border-color:rgba(58,175,206,0.1) !important;}
-body.dark-mode .item-card{background:#0A0F14 !important;border-color:rgba(58,175,206,0.08) !important;}
+body.dark-mode .item-card{background:#111820 !important;border-color:rgba(58,175,206,0.08) !important;}
 body.dark-mode .item-foto{background:#111820 !important;}
 body.dark-mode .item-foto-emoji{background:#111820 !important;}
 body.dark-mode .item-foto img{background:#111820;}
@@ -87,7 +87,7 @@ body.dark-mode .geri-btn:hover{background:#162028;color:#E4F0F4;}
 body.dark-mode .geri-btn:active{transform:scale(0.97);}
 .urun-baslik{padding:18px 20px 10px;font-family:var(--t-font-kat);font-size:1.25rem;font-weight:700;}
 
-.item-card{background:#F2F2F2;border-radius:12px;display:flex;align-items:stretch;margin:5px 2px;overflow:hidden;border:0.5px solid rgba(0,0,0,0.06);cursor:pointer;transition:transform 0.1s;height:90px;}
+.item-card{background:#F7F7F7;border-radius:12px;display:flex;align-items:stretch;margin:5px 2px;overflow:hidden;border:0.5px solid rgba(0,0,0,0.06);cursor:pointer;transition:transform 0.1s;height:90px;box-shadow:0 2px 8px rgba(0,0,0,0.07);}
 .item-card:active{transform:scale(0.98);}
 .item-foto{width:90px;min-width:90px;height:90px;flex-shrink:0;background:#E8E8E8;overflow:hidden;}
 .item-foto img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -135,13 +135,13 @@ body.dark-mode .geri-btn:active{transform:scale(0.97);}
 </div>
 
 <div class="oneri-wrap" id="oneriWrap" style="display:none;">
-  <div id="oneriFrame" style="background:white;border-radius:12px;padding:12px;border:0.5px solid rgba(0,0,0,0.07);">
+  <div id="oneriFrame" style="background:#F2F2F2;border-radius:12px;padding:12px;border:0.5px solid rgba(0,0,0,0.07);">
     <div style="font-family:'Oswald',sans-serif;font-size:0.95rem;font-weight:600;color:#2C3E2D;margin-bottom:10px;padding-left:2px;">Sizin İçin Seçtiklerimiz</div>
     <div class="oneri-scroll" id="oneriScroll"></div>
   </div>
 </div>
 
-<div style="padding:0 12px 12px;"><div id="oneriFrame" style="background:white;border-radius:12px;padding:12px;border:0.5px solid rgba(0,0,0,0.07);"><div class="kat-liste" id="katListe">
+<div style="padding:0 12px 12px;"><div id="katFrame" style="background:#F2F2F2;border-radius:12px;padding:12px;border:0.5px solid rgba(0,0,0,0.07);"><div class="kat-liste" id="katListe">
   <div class="loading-wrap"><div class="spinner"></div></div>
 </div>
 
@@ -151,7 +151,7 @@ body.dark-mode .geri-btn:active{transform:scale(0.97);}
     Kategoriler
   </div>
   <div class="urun-baslik" id="urunKatBaslik" style="padding:8px 16px 4px;"></div>
-  <div id="urunListe" style="padding-bottom:6px;"></div>
+  <div id="urunListe"></div>
 </div></div></div>
 
 <div id="footerAlani"></div>
@@ -261,7 +261,10 @@ function kategoriAcVeKaydet(katAd){
 
 function kategoriListesiGoster(){
   document.getElementById('katListe').style.display='block';
-  document.getElementById('urunSayfa').style.display='none';
+  const uspg=document.getElementById('urunSayfa');
+  uspg.style.display='none';
+  uspg.style.background='';
+  uspg.style.padding='';
   const liste = document.getElementById('katListe');
 
   if(!kategoriler.length){
@@ -332,7 +335,11 @@ function oneriGoster(){
 function kategoriAc(katAd){
   document.getElementById('katListe').style.display='none';
   document.getElementById('oneriWrap').style.display='none';
-  document.getElementById('urunSayfa').style.display='block';
+  const usp=document.getElementById('urunSayfa');
+  usp.style.display='block';
+  usp.style.background='#F2F2F2';
+  usp.style.padding='8px';
+  usp.style.minHeight='auto';
   document.getElementById('urunKatBaslik').textContent=katAd;
   const filtered=tumYemekler.filter(y=>y.cat===katAd);
   const liste=document.getElementById('urunListe');
@@ -340,6 +347,8 @@ function kategoriAc(katAd){
     liste.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--warm-gray);">Bu kategoride ürün yok.</div>';
     return;
   }
+  liste.style.background='#F2F2F2';
+  liste.style.padding='4px';
   liste.innerHTML='';
   filtered.forEach(item=>{
     const div=document.createElement('div');
@@ -362,7 +371,10 @@ function kategoriAc(katAd){
 
 function geriKategorilere(){
   document.getElementById('katListe').style.display='block';
-  document.getElementById('urunSayfa').style.display='none';
+  const uspg=document.getElementById('urunSayfa');
+  uspg.style.display='none';
+  uspg.style.background='';
+  uspg.style.padding='';
   // Öneri şeridini tekrar göster
   if(document.getElementById('oneriWrap').children.length > 0 ||
      document.getElementById('oneriScroll').children.length > 0){
@@ -404,8 +416,8 @@ async function footerYukle(){
   const fCard = isDark ? '#162028' : 'white';
   const fCardBorder = isDark ? 'rgba(58,175,206,0.1)' : 'rgba(0,0,0,0.06)';
   f.innerHTML = `
-    <div style="background:#F2F2F2;margin-top:0;overflow:hidden;border-top:none;padding:12px;">
-      <div style="background:white;border-radius:12px;padding:18px 16px;border:0.5px solid ${fCardBorder};">
+    <div style="background:white;margin-top:0;overflow:hidden;border-top:none;padding:12px;">
+      <div style="background:#F2F2F2;border-radius:12px;padding:18px 16px;border:0.5px solid ${fCardBorder};">
         <div style="text-align:center;margin-bottom:16px;">
           <div style="font-size:16px;font-weight:700;color:${fText};font-family:'Playfair Display',serif;">${data.ad||''}</div>
           <div style="font-size:10px;color:#C8603C;margin-top:3px;letter-spacing:1px;">${data.adres||''}</div>
