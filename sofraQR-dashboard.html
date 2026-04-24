@@ -1,0 +1,2641 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SofraQR – Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#F6F4F0;--brown:#2C3E2D;--amber:#C8603C;--amber-light:#D4724E;
+  --rust:#A63D2F;--sage:#7A9E78;--warm-gray:#7A9E78;--card:#FFFFFF;
+  --sidebar-w:220px;--success:#4CAF50;--danger:#E53935;
+  --bg:white;--surface:#F2F2F2;--surface2:#E8E8E8;
+  --text:#2C3E2D;--text2:#7A9E78;--border:rgba(0,0,0,0.07);
+  --sb-bg:#0C0C0C;--sb-active:rgba(200,96,60,0.12);--sb-text:rgba(255,255,255,0.4);--sb-text-active:#C8603C;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;overflow:hidden;transition:background 0.2s,color 0.2s;}
+body.dark-mode{
+  --bg:#0A0F14;--surface:#111820;--surface2:#162028;
+  --text:#E4F0F4;--text2:rgba(228,240,244,0.45);--border:rgba(58,175,206,0.1);
+  --sb-bg:#080D12;--amber:#3AAFCE;--amber-light:#5BBFDB;
+}
+body.light-mode{
+  --sb-bg:#F2F2F2;--sb-active:rgba(200,96,60,0.08);--sb-text:rgba(44,62,45,0.45);--sb-text-active:#C8603C;
+}
+body.light-mode .sidebar{border-right:none;}
+body.light-mode .sidebar-logo-text{color:#2C3E2D;}
+body.light-mode .sidebar-restaurant{background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.06);}
+body.light-mode .sidebar-restaurant-name{color:#2C3E2D;}
+body.light-mode .sidebar-restaurant-sub{color:rgba(44,62,45,0.4);}
+body.light-mode .nav-section{color:rgba(44,62,45,0.3);}
+body.light-mode .nav-item:hover{background:rgba(200,96,60,0.08);color:#2C3E2D;}
+body.light-mode .nav-item:hover svg{stroke:rgba(200,96,60,0.8);opacity:1;}
+body.light-mode .nav-item.active{background:rgba(200,96,60,0.1);border-left-color:#C8603C;}
+body.light-mode .sidebar-footer{border-top-color:rgba(0,0,0,0.07);}
+body.light-mode .user-name{color:#2C3E2D;}
+body.light-mode .user-role{color:rgba(44,62,45,0.4);}
+body.light-mode .nav-item svg{stroke:rgba(44,62,45,0.45);}
+body.light-mode .nav-item.active svg{stroke:#C8603C;}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sidebar-w);min-height:100vh;background:var(--sb-bg);
+  display:flex;flex-direction:column;position:fixed;left:0;top:0;z-index:50;
+  transition:background 0.2s;border-right:none;
+}
+body.light-mode .sidebar{background:#F2F2F2;border-right:none;}
+.sidebar-logo{padding:22px 18px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,0.05);}
+.sidebar-logo-icon{width:30px;height:30px;background:var(--amber);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sidebar-logo-icon svg{width:16px;height:16px;}
+.sidebar-logo-text{font-family:'Inter',sans-serif;font-size:1rem;font-weight:700;color:white;}
+.sidebar-logo-text span{color:var(--amber);}
+.sidebar-restaurant{padding:12px 14px;margin:12px 10px;background:rgba(255,255,255,0.04);border-radius:10px;border:0.5px solid rgba(255,255,255,0.05);}
+.sidebar-restaurant-name{font-size:0.8rem;font-weight:600;color:rgba(255,255,255,0.8);}
+.sidebar-restaurant-sub{font-size:0.68rem;color:rgba(255,255,255,0.3);margin-top:2px;}
+.sidebar-status{display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:0.65rem;color:#6fcf97;}
+.sidebar-status::before{content:'';width:5px;height:5px;border-radius:50%;background:#6fcf97;display:inline-block;}
+
+.nav-section{padding:8px 10px 4px;font-size:0.6rem;font-weight:600;color:rgba(255,255,255,0.18);letter-spacing:1.5px;text-transform:uppercase;margin-top:6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px;margin:2px 8px;border-radius:8px;cursor:pointer;font-size:0.82rem;font-weight:500;color:var(--sb-text);transition:all 0.15s;}
+.nav-item svg{width:16px;height:16px;flex-shrink:0;opacity:0.6;transition:opacity 0.15s;}
+.nav-item:hover{background:rgba(200,96,60,0.15);color:rgba(255,255,255,0.85);}
+.nav-item:hover svg{opacity:1;}
+.nav-item.active{background:var(--sb-active);color:var(--sb-text-active);border-left:2px solid var(--amber);padding-left:14px;}
+.nav-item.active svg{opacity:1;}
+.nav-icon{font-size:0.9rem;width:16px;text-align:center;}
+.nav-badge{margin-left:auto;background:var(--rust);color:white;font-size:0.6rem;font-weight:700;padding:2px 6px;border-radius:100px;}
+
+.sidebar-footer{margin-top:auto;padding:16px 18px;border-top:1px solid rgba(255,255,255,0.05);}
+.sidebar-user{display:flex;align-items:center;gap:10px;}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.78rem;color:white;}
+.user-name{font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.7);}
+.user-role{font-size:0.65rem;color:rgba(255,255,255,0.3);}
+
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;height:100vh;background:#F2F2F2;padding:12px 12px 12px 0;overflow:hidden;}
+.topbar{background:white;padding:10px 20px;display:flex;flex-direction:column;justify-content:center;border:1px solid rgba(0,0,0,0.07);border-bottom:none;border-radius:16px 16px 0 0;position:relative;z-index:40;transition:background 0.2s;flex-shrink:0;}
+.topbar-title{font-family:'Inter',sans-serif;font-size:1.1rem;font-weight:600;color:var(--text);}
+.topbar-actions{display:flex;align-items:center;gap:10px;}
+.tema-toggle{display:flex;align-items:center;background:var(--surface2);border-radius:100px;padding:3px;gap:2px;border:1px solid var(--border);}
+.tema-btn{width:30px;height:30px;border-radius:100px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;background:transparent;border:none;}
+.tema-btn.active{background:var(--amber);}
+.tema-btn svg{width:15px;height:15px;}
+.topbar-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:8px 16px;border-radius:100px;font-family:'Inter',sans-serif;font-size:0.78rem;
+  font-weight:500;cursor:pointer;border:none;transition:all 0.15s;
+}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text);}
+.btn-outline:hover{border-color:var(--amber);color:var(--amber);}
+.btn-filled{background:#8C4A2F;color:#F6F4F0;border:none;}
+.btn-filled:hover{background:#7A3E27;}
+.btn-danger{background:transparent;color:#8B3A3A;border:1px solid rgba(139,58,58,0.2);}
+.btn-danger:hover{background:rgba(139,58,58,0.06);}
+body.dark-mode .btn-filled{background:#1E5F72;color:#C8E8F0;}
+body.dark-mode .btn-filled:hover{background:#195268;}
+body.dark-mode .btn-outline{border-color:rgba(58,175,206,0.2);color:rgba(228,240,244,0.7);}
+body.dark-mode .btn-outline:hover{border-color:rgba(58,175,206,0.5);color:#E4F0F4;}
+body.dark-mode .btn-danger{color:rgba(200,100,100,0.8);border-color:rgba(200,100,100,0.2);}
+
+
+.page.active{display:block;}
+
+/* CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:28px;}
+.stat-card{background:var(--surface);border-radius:12px;padding:20px;border:1px solid var(--border);transition:background 0.2s,border 0.2s;}
+.stat-label{font-size:0.72rem;color:var(--text2);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;}
+.stat-value{font-family:'Inter',sans-serif;font-size:1.8rem;font-weight:700;line-height:1;color:var(--text);}
+.stat-change{font-size:0.75rem;margin-top:6px;}
+.stat-change.up{color:var(--sage);}
+.stat-change.down{color:var(--rust);}
+
+.grid-2{display:grid;grid-template-columns:2fr 1fr;gap:20px;}
+.card{background:var(--surface);border-radius:12px;padding:20px;border:1px solid var(--border);transition:background 0.2s,border 0.2s;}
+.card-title{font-size:0.88rem;font-weight:600;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;color:var(--text);}
+.card-title-text{display:flex;align-items:center;gap:8px;}
+
+/* CHART */
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:120px;margin-top:8px;}
+.bar-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;}
+.bar{background:linear-gradient(180deg,var(--amber-light),var(--amber));border-radius:6px 6px 0 0;width:100%;transition:height 0.5s ease;}
+.bar-label{font-size:0.65rem;color:var(--warm-gray);}
+
+/* POPULAR */
+.popular-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(44,26,14,0.05);}
+.popular-item:last-child{border-bottom:none;}
+.popular-rank{width:24px;height:24px;border-radius:50%;background:rgba(200,133,42,0.1);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--amber);}
+.popular-name{flex:1;font-size:0.85rem;font-weight:500;color:var(--text);}
+.popular-bar-wrap{width:80px;height:6px;background:rgba(44,26,14,0.06);border-radius:100px;overflow:hidden;}
+.popular-bar{height:100%;background:var(--amber);border-radius:100px;}
+.popular-count{font-size:0.78rem;color:var(--text2);width:40px;text-align:right;}
+
+/* MENU PAGE */
+.menu-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.category-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+.cat-tab{padding:8px 18px;border-radius:100px;font-size:0.82rem;font-weight:500;cursor:pointer;border:1.5px solid var(--border);color:var(--text2);transition:all 0.15s;background:var(--surface2);}
+.cat-tab.active,.cat-tab:hover{background:var(--amber);color:white;border-color:var(--amber);}
+.cat-tab-add{background:transparent;border:1.5px dashed rgba(44,26,14,0.2);color:var(--warm-gray);}
+.cat-tab-add:hover{border-color:var(--amber);color:var(--amber);background:transparent;}
+
+.menu-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.menu-item-card{
+  background:var(--surface);border-radius:12px;overflow:hidden;
+  border:1px solid var(--border);transition:transform 0.15s,box-shadow 0.15s;
+}
+.menu-item-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(44,26,14,0.08);}
+.menu-item-img{width:100%;height:120px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;position:relative;overflow:hidden;}
+.menu-item-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.menu-item-badge{
+  position:absolute;top:4px;right:4px;padding:2px 5px;border-radius:100px;
+  font-size:0.55rem;font-weight:600;
+}
+.badge-active{background:rgba(46,125,50,0.12);color:#4CAF50;}
+.badge-passive{background:rgba(230,81,0,0.1);color:#E65100;}
+.menu-item-body{padding:8px;}
+.menu-item-name{font-size:0.75rem;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);}
+.menu-item-desc{display:none;}
+.menu-item-footer{display:flex;align-items:center;justify-content:space-between;}
+.menu-item-price{font-family:'Playfair Display',serif;font-size:0.85rem;font-weight:700;color:var(--amber);}
+.menu-item-actions{display:flex;gap:3px;}
+.icon-btn{
+  width:22px;height:22px;border-radius:6px;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:0.65rem;
+  transition:all 0.15s;
+}
+.icon-btn-edit{background:rgba(200,96,60,0.1);color:var(--amber);}
+.icon-btn-edit:hover{background:var(--amber);color:white;}
+.icon-btn-del{background:rgba(229,57,53,0.1);color:var(--danger);}
+.icon-btn-del:hover{background:var(--danger);color:white;}
+
+.add-item-card{background:var(--surface2);border-radius:14px;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;min-height:200px;transition:all 0.15s;color:var(--text2);}
+.add-item-card:hover{border-color:var(--amber);color:var(--amber);}
+.add-item-icon{font-size:2rem;}
+.add-item-text{font-size:0.85rem;font-weight:500;}
+
+/* QR PAGE */
+.qr-grid-page{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.qr-card{background:var(--surface);border-radius:16px;padding:24px;text-align:center;border:1px solid var(--border);transition:transform 0.15s;}
+.qr-card:hover{transform:translateY(-2px);}
+.qr-card-title{font-size:0.9rem;font-weight:600;margin-bottom:4px;color:var(--text);}
+.qr-card-sub{font-size:0.75rem;color:var(--text2);margin-bottom:16px;}
+.qr-visual{width:120px;height:120px;margin:0 auto 16px;display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:10px;background:var(--surface2);border-radius:12px;}
+.qrc{border-radius:1px;}
+.qr-scans{display:flex;align-items:center;justify-content:center;gap:6px;font-size:0.78rem;color:var(--warm-gray);margin-bottom:14px;}
+.qr-scans strong{color:var(--brown);}
+.qr-actions{display:flex;gap:8px;}
+.qr-actions button{flex:1;padding:8px;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;border:none;transition:all 0.15s;}
+.qr-dl{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#8C4A2F;color:#F6F4F0;border:none;border-radius:100px;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:500;}
+.qr-dl:hover{background:#7A3E27;}
+.qr-print{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:100px;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:500;}
+.qr-print:hover{border-color:var(--amber);color:var(--amber);}
+body.dark-mode .qr-dl{background:#1E5F72;color:#C8E8F0;}
+body.dark-mode .qr-print{border-color:rgba(58,175,206,0.2);color:rgba(228,240,244,0.7);}
+body.dark-mode .qr-card{background:var(--surface);border-color:var(--border);}
+
+.add-table-card{
+  background:var(--surface);border-radius:16px;border:2px dashed var(--border);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;cursor:pointer;min-height:260px;color:var(--warm-gray);transition:all 0.15s;
+}
+.add-table-card:hover{border-color:var(--amber);color:var(--amber);}
+
+/* ANALYTICS */
+.analytics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:20px;}
+.big-chart{background:var(--surface);border-radius:16px;padding:24px;border:1px solid var(--border);margin-bottom:20px;}
+.line-chart{height:140px;position:relative;overflow:hidden;}
+.line-chart svg{width:100%;height:100%;}
+
+.heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.heat-cell{
+  aspect-ratio:1;border-radius:4px;
+  background:rgba(200,133,42,0.08);
+  transition:background 0.2s;
+}
+.heat-cell:hover{transform:scale(1.2);}
+.heat-day{font-size:0.65rem;color:var(--warm-gray);text-align:center;}
+
+/* TABLES PAGE */
+.tables-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.table-card{
+  background:var(--surface);border-radius:14px;padding:20px;text-align:center;
+  border:1px solid var(--border);cursor:pointer;transition:all 0.15s;
+}
+.table-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(44,26,14,0.08);}
+.table-card.occupied{border-color:var(--amber);background:rgba(200,133,42,0.04);}
+.table-card.empty{border-color:rgba(107,126,94,0.3);}
+.table-icon{font-size:2rem;margin-bottom:8px;}
+.table-num{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;}
+.table-status{font-size:0.72rem;margin-top:4px;font-weight:500;}
+.table-card.occupied .table-status{color:var(--amber);}
+.table-card.empty .table-status{color:var(--sage);}
+.table-scans{font-size:0.7rem;color:var(--warm-gray);margin-top:6px;}
+
+/* SETTINGS PAGE */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.settings-card{background:var(--surface);border-radius:16px;padding:28px;border:1px solid var(--border);}
+.settings-title{font-size:1rem;font-weight:600;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(44,26,14,0.07);}
+.form-group{margin-bottom:16px;}
+.form-label{font-size:0.8rem;font-weight:600;color:var(--text2);margin-bottom:6px;display:block;}
+.form-input{
+  width:100%;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(44,26,14,0.12);
+  font-family:'Inter',sans-serif;font-size:0.88rem;color:var(--text);background:var(--surface);
+  transition:border-color 0.15s;outline:none;
+}
+.form-input:focus{border-color:var(--amber);background:var(--surface);}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239A8F85' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+
+.color-swatches{display:flex;gap:8px;flex-wrap:wrap;}
+.swatch{width:32px;height:32px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all 0.15s;}
+.swatch.selected{border-color:var(--brown);transform:scale(1.1);}
+
+.lang-list{display:flex;flex-direction:column;gap:10px;}
+.lang-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--cream);border-radius:10px;}
+.lang-name{font-size:0.85rem;font-weight:500;}
+.lang-flag{font-size:1.1rem;margin-right:8px;}
+.toggle{
+  width:40px;height:22px;border-radius:100px;border:none;cursor:pointer;
+  position:relative;transition:background 0.2s;
+}
+.toggle.on{background:var(--amber);}
+.toggle.off{background:rgba(44,26,14,0.15);}
+.toggle::after{
+  content:'';position:absolute;top:3px;width:16px;height:16px;border-radius:50%;background:white;
+  transition:left 0.2s;
+}
+.toggle.on::after{left:21px;}
+.toggle.off::after{left:3px;}
+
+.save-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  width:100%;padding:11px 20px;background:#8C4A2F;color:#F6F4F0;border:none;border-radius:100px;
+  font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:500;cursor:pointer;margin-top:4px;
+  transition:background 0.15s;
+}
+.save-btn:hover{background:#7A3E27;}
+body.dark-mode .save-btn{background:#1E5F72;color:#C8E8F0;}
+body.dark-mode .save-btn:hover{background:#195268;}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(44,26,14,0.5);z-index:100;
+  display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);
+}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:20px;padding:32px;width:480px;max-width:90vw;}
+.modal-title{font-family:'Inter',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:20px;color:var(--text);}
+.modal-actions{display:flex;gap:10px;margin-top:20px;}
+.modal-actions button{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:1;padding:11px;border-radius:100px;font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:500;cursor:pointer;transition:all 0.15s;}
+.modal-cancel{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.modal-save{background:#8C4A2F;color:#F6F4F0;border:none;}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:24px;right:24px;background:#2C3E2D;color:#F6F4F0;
+  padding:11px 20px;border-radius:100px;font-size:0.82rem;font-weight:500;
+  transform:translateY(80px);opacity:0;transition:all 0.3s;z-index:200;
+  display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.toast.show{transform:translateY(0);opacity:1;}
+body.dark-mode .toast{background:#111820;color:#E4F0F4;border-color:rgba(58,175,206,0.15);}
+
+/* DARK MODE PAGE ELEMENTS */
+body.dark-mode .stat-card{background:var(--surface);border-color:var(--border);}
+body.dark-mode .card{background:var(--surface);border-color:var(--border);}
+body.dark-mode .settings-card{background:var(--surface);border-color:var(--border);}
+body.dark-mode .form-input{background:var(--surface2);border-color:var(--border);color:var(--text);}
+body.dark-mode .form-input:focus{border-color:var(--amber);background:var(--surface);}
+body.dark-mode .form-label{color:var(--text2);}
+body.dark-mode .form-select{background:var(--surface2);color:var(--text);}
+body.dark-mode .menu-item-card{background:var(--surface);border-color:var(--border);}
+body.dark-mode .cat-tab{background:var(--surface2);border-color:var(--border);color:var(--text2);}
+body.dark-mode .modal{background:var(--surface);}
+body.dark-mode .modal-title{color:var(--text);}
+body.dark-mode .modal-cancel{background:transparent;color:rgba(228,240,244,0.5);border-color:rgba(58,175,206,0.15);}
+body.dark-mode .bar{background:var(--amber);}
+body.dark-mode .popular-name{color:var(--text);}
+body.dark-mode .popular-rank{background:rgba(209,131,170,0.1);color:var(--amber);}
+body.dark-mode .popular-bar-wrap{background:rgba(61,43,43,0.1);}
+body.dark-mode .lang-row{background:var(--surface2);}
+body.dark-mode .lang-name{color:var(--text);}
+body.dark-mode .settings-title{color:var(--text);}
+body.dark-mode .save-btn{background:var(--amber);}
+input[type="range"]{
+  accent-color:#C8603C;
+  background:transparent;
+}
+input[type="range"]::-webkit-slider-runnable-track{
+  background:var(--border);
+  height:3px;
+  border-radius:100px;
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:13px;height:13px;
+  border-radius:50%;
+  background:#98C1B0;
+  margin-top:-5px;
+  cursor:pointer;
+}
+input[type="range"]::-moz-range-track{background:var(--border);height:3px;border-radius:100px;}
+input[type="range"]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:#98C1B0;border:none;cursor:pointer;}
+body.dark-mode input[type="range"]::-webkit-slider-runnable-track{background:rgba(58,175,206,0.2);}
+body.dark-mode input[type="range"]::-webkit-slider-thumb{background:#3AAFCE;}
+body.dark-mode input[type="range"]::-moz-range-track{background:rgba(58,175,206,0.2);}
+body.dark-mode input[type="range"]::-moz-range-thumb{background:#3AAFCE;}
+body.dark-mode .topbar{background:var(--surface);border-color:var(--border);}
+
+body.dark-mode .btn-outline{border-color:var(--border);color:var(--text);}
+body.dark-mode .menu-item-foto{background:var(--surface2);}
+body.dark-mode .item-emoji{background:var(--surface2);}
+body.dark-mode .cat-card{background:var(--surface);border-color:var(--border);}
+body.dark-mode .cat-name{color:var(--text);}
+body.dark-mode .cat-badge{background:var(--surface2);color:var(--text2);}
+body.dark-mode .duplicate-modal{background:var(--surface);}
+body.dark-mode .heatmap .heat-cell{background:var(--surface2);}
+body.dark-mode .chart-bars .bar{background:var(--amber);}
+
+/* TOOLBAR */
+.tb-item{position:relative;display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.tb-lbl{font-size:9px;color:var(--text2);white-space:nowrap;font-weight:500;cursor:default;}
+/* JS tooltip */
+#tb-tooltip{
+  position:fixed;
+  background:#2C3E2D;
+  color:white;
+  font-size:10px;
+  font-weight:500;
+  padding:4px 10px;
+  border-radius:6px;
+  white-space:nowrap;
+  z-index:9999;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 0.15s;
+  font-family:'Inter',sans-serif;
+}
+#tb-tooltip.show{opacity:1;}
+
+/* İÇERİK ÇERÇEVESİ */
+.content-frame{
+  flex:1;
+  background:white;
+  border:1px solid rgba(0,0,0,0.07);
+  border-top:none;
+  border-radius:0 0 16px 16px;
+  overflow-y:auto;
+  min-height:0;
+  overflow-x:hidden;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(0,0,0,0.15) transparent;
+  box-shadow:0 4px 16px rgba(0,0,0,0.06);
+}
+.page{display:none;padding:16px 20px;background:white;min-height:100%;}
+.topbar{background:white;padding:10px 20px;display:flex;flex-direction:column;justify-content:center;border:1px solid rgba(0,0,0,0.07);border-bottom:none;border-radius:16px 16px 0 0;position:relative;z-index:40;transition:background 0.2s;flex-shrink:0;box-shadow:0 -2px 16px rgba(0,0,0,0.04);}
+.content-frame::-webkit-scrollbar{width:4px;}
+.content-frame::-webkit-scrollbar-track{background:transparent;}
+.content-frame::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:100px;}
+.content-frame::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,0.25);}
+body.dark-mode .topbar{background:var(--surface)!important;border-color:var(--border)!important;}
+body.dark-mode .content-frame{background:var(--bg);border-color:var(--border);scrollbar-color:rgba(255,255,255,0.15) transparent;}
+body.dark-mode .main{background:var(--bg);}
+body.light-mode .topbar{background:white!important;border-color:rgba(0,0,0,0.07)!important;}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 12h8M12 8v8"/></svg>
+    </div>
+    <div class="sidebar-logo-text">Sofra<span>QR</span></div>
+  </div>
+  <div class="sidebar-restaurant">
+    <div class="sidebar-restaurant-name">Lezzet Durağı</div>
+    <div class="sidebar-restaurant-sub">Kadıköy, İstanbul</div>
+    <div class="sidebar-status">Yayında</div>
+  </div>
+
+  <div class="nav-section">Ana Menü</div>
+  <div class="nav-item active" onclick="showPage('dashboard',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </div>
+  <div class="nav-item" onclick="showPage('menu',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+    Menü Yönetimi
+  </div>
+  <div class="nav-item" onclick="showPage('qr',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h.01M18 14h.01M14 18h.01M18 18h.01"/></svg>
+    QR Kodlar
+  </div>
+  <div class="nav-item" onclick="showPage('analytics',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Analitik
+  </div>
+
+  <div class="nav-section">Ayarlar</div>
+  <div class="nav-item" onclick="showPage('restoran',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Restoran Bilgileri
+  </div>
+  <div class="nav-item" onclick="showPage('preview',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+    Telefon Görünümü
+  </div>
+  <div class="nav-item" onclick="showPage('settings',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+    Dil & Tasarım
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar">A</div>
+      <div>
+        <div class="user-name">Admin</div>
+        <div class="user-role">Restoran Sahibi</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div id="topbarIcon" style="width:32px;height:32px;background:rgba(200,96,60,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C8603C" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </div>
+        <div>
+          <div id="topbarBreadcrumb" style="font-size:9px;color:var(--text2);margin-bottom:2px;"></div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div id="pageTitle" style="font-size:15px;font-weight:700;color:var(--text);">Dashboard</div>
+            <div id="topbarBadge" style="display:none;font-size:10px;color:var(--text2);background:var(--surface2);padding:3px 8px;border-radius:100px;border:1px solid var(--border);"></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px;">
+        <div class="tema-toggle">
+          <button class="tema-btn active" id="temaAcik" onclick="temaDegistir('acik')" title="Açık tema">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.3 6H8.3C6.3 13.7 5 11.5 5 9a7 7 0 0 1 7-7z"/></svg>
+          </button>
+          <button class="tema-btn" id="temaKoyu" onclick="temaDegistir('koyu')" title="Koyu tema">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.3 6H8.3C6.3 13.7 5 11.5 5 9a7 7 0 0 1 7-7z"/><line x1="4" y1="4" x2="20" y2="20" stroke="rgba(255,80,80,0.6)" stroke-width="1.5"/></svg>
+          </button>
+        </div>
+        <button class="topbar-btn btn-outline" style="font-size:0.78rem;padding:4px 12px;" onclick="window.open('sofraQR-menu.html?uid='+currentUser.id,'_blank')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Menüyü Gör</button>
+      </div>
+    </div>
+    <div id="topbarActionRow" style="display:none;width:100%;margin-top:6px;padding-top:6px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:8px;">
+      <div id="topbarSubLabel" style="font-size:10px;color:var(--text2);margin-right:auto;"></div>
+      <button class="topbar-btn btn-filled" id="topbarAction" style="display:none;"></button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="content-frame">
+  <div class="page active" id="page-dashboard">
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-label">Bugünkü Taramalar</div>
+        <div class="stat-value">247</div>
+        <div class="stat-change up">↑ %23 dün'e göre</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Toplam Yemek</div>
+        <div class="stat-value">34</div>
+        <div class="stat-change up">↑ 3 bu hafta eklendi</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Aktif Masa</div>
+        <div class="stat-value">8/12</div>
+        <div class="stat-change up">↑ Yoğun dönem</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Bu Ayki Tarama</div>
+        <div class="stat-value">4.821</div>
+        <div class="stat-change down">↓ %5 geçen aya göre</div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-text"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Haftalık Tarama Grafiği</div>
+          <span style="font-size:0.75rem;color:var(--warm-gray);font-weight:400;">Son 7 gün</span>
+        </div>
+        <div class="chart-bars" id="chartBars"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;" id="chartLabels"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">
+          <div class="card-title-text">🔥 En Popüler Yemekler</div>
+        </div>
+        <div id="popularList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MENU -->
+  <div class="page" id="page-menu">
+    <div id="menuToolbarBtnWrap" style="display:flex;"></div>
+    <div id="menuToolbarPanel" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;margin-bottom:12px;display:none;align-items:center;gap:0;overflow-x:auto;white-space:nowrap;scrollbar-width:none;">
+
+      <!-- Foto yüksekliği -->
+      <div class="tb-item" style="padding:0 12px 0 0;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+        <span class="tb-lbl" data-tip="Foto Yüksekliği">Foto Y</span>
+        <input type="range" min="80" max="220" value="137" id="s-foto-h" oninput="menuAyarUygula()" style="width:72px;accent-color:#C8603C;flex-shrink:0;"/>
+        <span style="font-size:10px;font-weight:600;color:#C8603C;min-width:30px;" id="lbl-foto-h">137px</span>
+      </div>
+
+      <div style="width:1px;height:20px;background:var(--border);flex-shrink:0;margin-right:12px;"></div>
+
+      <!-- Sütun -->
+      <div class="tb-item" style="padding-right:12px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span class="tb-lbl" data-tip="Sütun Sayısı">Sütun</span>
+        <select id="s-sutun" onchange="menuAyarUygula()" style="font-size:10px;padding:3px 5px;border-radius:5px;border:0.5px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;">
+          <option value="3">3</option><option value="4">4</option><option value="5" selected>5</option>
+        </select>
+      </div>
+
+      <div style="width:1px;height:20px;background:var(--border);flex-shrink:0;margin-right:12px;"></div>
+
+      <!-- Köşe -->
+      <div class="tb-item" style="padding-right:12px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><path d="M3 9V5a2 2 0 0 1 2-2h4"/></svg>
+        <span class="tb-lbl" data-tip="Köşe Yuvarlaklığı">Köşe</span>
+        <input type="range" min="0" max="24" value="24" id="s-kose" oninput="menuAyarUygula()" style="width:64px;accent-color:#C8603C;flex-shrink:0;"/>
+        <span style="font-size:10px;font-weight:600;color:#C8603C;min-width:30px;" id="lbl-kose">24px</span>
+      </div>
+
+      <div style="width:1px;height:20px;background:var(--border);flex-shrink:0;margin-right:12px;"></div>
+
+      <!-- Boşluk -->
+      <div class="tb-item" style="padding-right:12px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <span class="tb-lbl" data-tip="Kart Boşluğu">Boşluk</span>
+        <input type="range" min="4" max="28" value="7" id="s-gap" oninput="menuAyarUygula()" style="width:64px;accent-color:#C8603C;flex-shrink:0;"/>
+        <span style="font-size:10px;font-weight:600;color:#C8603C;min-width:28px;" id="lbl-gap">7px</span>
+      </div>
+
+      <div style="width:1px;height:20px;background:var(--border);flex-shrink:0;margin-right:12px;"></div>
+
+      <!-- Kategori adı boyutu -->
+      <div class="tb-item" style="padding-right:12px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+        <span class="tb-lbl" data-tip="Kategori Adı Boyutu">Kat. Adı</span>
+        <input type="range" min="10" max="22" value="15" id="s-kat-font" oninput="menuAyarUygula()" style="width:64px;accent-color:#C8603C;flex-shrink:0;"/>
+        <span style="font-size:10px;font-weight:600;color:#C8603C;min-width:30px;" id="lbl-kat-font">15px</span>
+      </div>
+
+      <div style="width:1px;height:20px;background:var(--border);flex-shrink:0;margin-right:12px;"></div>
+
+      <!-- Font kombinasyonu -->
+      <div class="tb-item" style="padding-right:12px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+        <span class="tb-lbl" data-tip="Font Kombinasyonu">Font</span>
+        <select id="s-font-komb" onchange="menuAyarUygula()" style="font-size:10px;padding:3px 5px;border-radius:5px;border:0.5px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;">
+          <option value="Oswald" selected>Oswald</option>
+          <option value="Bebas Neue">Bebas Neue</option>
+          <option value="Playfair Display">Playfair</option>
+          <option value="Cormorant Garamond">Cormorant</option>
+          <option value="Poppins">Poppins</option>
+        </select>
+      </div>
+
+      <div style="width:1px;height:20px;background:var(--border);flex-shrink:0;margin-right:12px;"></div>
+
+      <!-- Font kalınlığı -->
+      <div class="tb-item" style="padding-right:12px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg>
+        <span class="tb-lbl" data-tip="Font Kalınlığı">Kalınlık</span>
+        <select id="s-font-weight" onchange="menuAyarUygula()" style="font-size:10px;padding:3px 5px;border-radius:5px;border:0.5px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;">
+          <option value="300">İnce</option>
+          <option value="400">Normal</option>
+          <option value="500" selected>Orta</option>
+          <option value="600">Kalın</option>
+          <option value="700">Çok Kalın</option>
+        </select>
+      </div>
+
+      <!-- Sıfırla -->
+      <button onclick="menuAyarSifirla()" style="margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:100px;background:transparent;color:var(--text2);border:0.5px solid var(--border);font-size:10px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Sıfırla
+      </button>
+
+    </div>
+
+    <!-- KATEGORİ / ÜRÜN GRİD -->
+    <div id="view-kategoriler">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="font-size:13px;font-weight:600;color:var(--text);">Kategoriler</div>
+        <button onclick="menuToolbarToggle()" id="menuToolbarBtn" style="display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:100px;background:var(--surface);border:1px solid var(--border);font-size:11px;font-weight:500;color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          Görünüm Ayarları
+          <svg id="menuToolbarArrow" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s;"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+      <div class="menu-grid" id="kategoriGrid"></div>
+    </div>
+    <div id="view-urunler" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button onclick="geriKategorilere()" style="background:var(--surface2);border:1px solid var(--border);padding:7px 14px;border-radius:100px;font-size:0.82rem;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:6px;color:var(--text2);transition:all 0.15s;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Geri
+          </button>
+          <div style="font-size:1rem;font-weight:600;color:var(--text);" id="aktifKategoriAdi"></div>
+        </div>
+        <button onclick="urunToolbarToggle()" id="urunToolbarBtn" style="display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:100px;background:var(--surface);border:1px solid var(--border);font-size:11px;font-weight:500;color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          Görünüm Ayarları
+          <svg id="urunToolbarArrow" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition:transform 0.2s;"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+      <div id="urunToolbarBtnWrap" style="display:none;"></div>
+      <div id="urunToolbarPanel" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;margin-bottom:12px;align-items:center;gap:0;overflow-x:auto;white-space:nowrap;scrollbar-width:none;">
+
+        <div class="tb-item" style="padding-right:12px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+          <span class="tb-lbl" data-tip="Foto Yüksekliği">Foto Y</span>
+          <input type="range" min="80" max="200" value="120" id="u-foto-h" oninput="urunAyarUygula()" style="width:72px;accent-color:#C8603C;flex-shrink:0;"/>
+          <span style="font-size:10px;font-weight:600;color:#C8603C;min-width:30px;" id="lbl-u-foto-h">120px</span>
+        </div>
+
+        <div style="width:1px;height:20px;background:var(--border);flex-shrink:0;margin-right:12px;"></div>
+
+        <div class="tb-item" style="padding-right:12px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span class="tb-lbl" data-tip="Sütun Sayısı">Sütun</span>
+          <select id="u-sutun" onchange="urunAyarUygula()" style="font-size:10px;padding:3px 5px;border-radius:5px;border:0.5px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;">
+            <option value="3">3</option><option value="4">4</option><option value="5" selected>5</option>
+          </select>
+        </div>
+
+        <div style="width:1px;height:20px;background:var(--border);flex-shrink:0;margin-right:12px;"></div>
+
+        <div class="tb-item" style="padding-right:12px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><path d="M3 9V5a2 2 0 0 1 2-2h4"/></svg>
+          <span class="tb-lbl" data-tip="Köşe Yuvarlaklığı">Köşe</span>
+          <input type="range" min="0" max="24" value="12" id="u-kose" oninput="urunAyarUygula()" style="width:64px;accent-color:#C8603C;flex-shrink:0;"/>
+          <span style="font-size:10px;font-weight:600;color:#C8603C;min-width:30px;" id="lbl-u-kose">12px</span>
+        </div>
+
+        <div style="width:1px;height:20px;background:var(--border);flex-shrink:0;margin-right:12px;"></div>
+
+        <div class="tb-item" style="padding-right:12px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+          <span class="tb-lbl" data-tip="Ürün Adı Boyutu">Ürün Adı</span>
+          <input type="range" min="10" max="20" value="12" id="u-ad-font" oninput="urunAyarUygula()" style="width:64px;accent-color:#C8603C;flex-shrink:0;"/>
+          <span style="font-size:10px;font-weight:600;color:#C8603C;min-width:30px;" id="lbl-u-ad-font">12px</span>
+        </div>
+
+        <div style="width:1px;height:20px;background:var(--border);flex-shrink:0;margin-right:12px;"></div>
+
+        <div class="tb-item" style="padding-right:12px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span class="tb-lbl" data-tip="Fiyat Boyutu">Fiyat</span>
+          <input type="range" min="10" max="20" value="13" id="u-fiyat-font" oninput="urunAyarUygula()" style="width:64px;accent-color:#C8603C;flex-shrink:0;"/>
+          <span style="font-size:10px;font-weight:600;color:#C8603C;min-width:30px;" id="lbl-u-fiyat-font">13px</span>
+        </div>
+
+        <div style="width:1px;height:20px;background:var(--border);flex-shrink:0;margin-right:12px;"></div>
+
+        <div class="tb-item" style="padding-right:12px;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+          <span class="tb-lbl" data-tip="Font Kombinasyonu">Font</span>
+          <select id="u-font-komb" onchange="urunAyarUygula()" style="font-size:10px;padding:3px 5px;border-radius:5px;border:0.5px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;">
+            <option value="Oswald" selected>Oswald</option>
+            <option value="Bebas Neue">Bebas Neue</option>
+            <option value="Playfair Display">Playfair</option>
+            <option value="Cormorant Garamond">Cormorant</option>
+            <option value="Poppins">Poppins</option>
+          </select>
+        </div>
+
+        <button onclick="urunAyarSifirla()" style="margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:100px;background:transparent;color:var(--text2);border:0.5px solid var(--border);font-size:10px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Sıfırla
+        </button>
+      </div>
+
+      <div class="menu-grid" id="menuGrid"></div>
+    </div>
+
+  </div>
+
+  <!-- QR -->
+  <div class="page" id="page-qr">
+    <div style="max-width:480px;margin:0 auto;text-align:center;">
+      <div class="card" style="padding:40px 36px;">
+        <div style="font-size:0.75rem;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;">Menü QR Kodunuz</div>
+        <p style="font-size:0.88rem;color:var(--warm-gray);margin-bottom:28px;line-height:1.6;">Bu QR kodu yazdırıp masalara koyun. Müşteriler okutunca menünüze ulaşır.</p>
+        <div id="anaQR" style="width:200px;height:200px;margin:0 auto 24px;background:var(--surface2);border-radius:16px;display:flex;align-items:center;justify-content:center;">
+          <div style="color:var(--warm-gray);font-size:0.8rem;">Yükleniyor...</div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--warm-gray);margin-bottom:24px;" id="qrUrl"></div>
+        <div style="display:flex;gap:12px;">
+          <button class="qr-dl" style="flex:1;padding:12px;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;background:var(--amber);color:white;border:none;font-family:'Inter',sans-serif;" onclick="downloadQR()" xx="border:none;background:var(--amber);color:white;font-family:'DM Sans',sans-serif;" onclick="qrIndir()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> İndir</button>
+          <button class="qr-print" style="flex:1;padding:12px;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;border:none;background:rgba(44,26,14,0.08);color:var(--brown);font-family:'DM Sans',sans-serif;" onclick="qrYazdir()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Yazdır</button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:24px;margin-top:16px;text-align:left;">
+        <div style="font-size:0.85rem;font-weight:600;margin-bottom:12px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Nasıl kullanılır?</div>
+        <div style="font-size:0.82rem;color:var(--warm-gray);line-height:1.8;">
+          1. QR kodu indirin veya yazdırın<br>
+          2. Masalara, kapıya veya menü kartına yapıştırın<br>
+          3. Müşteriler telefonlarıyla okutunca menünüz açılır<br>
+          4. Menünüzü güncellediğinizde QR değişmez
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLES -->
+  <div class="page" id="page-tables">
+    <div style="margin-bottom:20px;display:flex;align-items:center;gap:16px;">
+      <div style="display:flex;align-items:center;gap:6px;font-size:0.82rem;"><span style="width:12px;height:12px;border-radius:3px;background:rgba(200,133,42,0.3);display:inline-block;"></span> Dolu</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:0.82rem;"><span style="width:12px;height:12px;border-radius:3px;background:rgba(107,126,94,0.3);display:inline-block;"></span> Boş</div>
+    </div>
+    <div class="tables-grid" id="tablesGrid"></div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div class="page" id="page-analytics">
+    <div class="analytics-grid">
+      <div class="stat-card">
+        <div class="stat-label">Bu Hafta Tarama</div>
+        <div class="stat-value">1.247</div>
+        <div class="stat-change up">↑ %18 geçen haftaya göre</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Ortalama Seans Süresi</div>
+        <div class="stat-value">2:34</div>
+        <div class="stat-change up">↑ %8 artış</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">En Yoğun Saat</div>
+        <div class="stat-value">13:00</div>
+        <div class="stat-change" style="color:var(--warm-gray);">Öğle arası</div>
+      </div>
+    </div>
+    <div class="big-chart">
+      <div class="card-title"><div class="card-title-text"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> Aylık Tarama Trendi</div></div>
+      <div class="line-chart">
+        <svg viewBox="0 0 400 120" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#C8852A" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#C8852A" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,90 C30,80 60,60 90,55 C120,50 150,65 180,45 C210,25 240,35 270,30 C300,25 330,20 360,15 C375,12 390,10 400,8" fill="none" stroke="#C8852A" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M0,90 C30,80 60,60 90,55 C120,50 150,65 180,45 C210,25 240,35 270,30 C300,25 330,20 360,15 C375,12 390,10 400,8 L400,120 L0,120 Z" fill="url(#grad)"/>
+        </svg>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><div class="card-title-text">🗓️ Günlük Yoğunluk Haritası</div></div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px;">
+          <div class="heat-day">Pzt</div><div class="heat-day">Sal</div><div class="heat-day">Çar</div>
+          <div class="heat-day">Per</div><div class="heat-day">Cum</div><div class="heat-day">Cmt</div><div class="heat-day">Paz</div>
+        </div>
+        <div class="heatmap" id="heatmap"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><div class="card-title-text">🔥 En Çok Görüntülenen</div></div>
+        <div id="popularList2"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><div class="card-title-text"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Ülkelere Göre</div></div>
+        <div id="ulkeListesi"><div style="font-size:0.82rem;color:var(--warm-gray);padding:12px 0;">Yükleniyor...</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <!-- TELEFON GÖRÜNÜMÜ -->
+  <div class="page" id="page-preview">
+    <div style="display:flex;flex-direction:column;align-items:center;padding:20px 0;">
+
+      <!-- Cihaz seçici -->
+      <div style="display:flex;gap:12px;margin-bottom:32px;">
+        <button id="btn-iphone" onclick="cihazSec('iphone',this)" style="
+          display:flex;align-items:center;gap:8px;padding:10px 24px;
+          border-radius:100px;border:2px solid var(--brown);
+          background:var(--brown);color:white;
+          font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;">
+           iPhone
+        </button>
+        <button id="btn-android" onclick="cihazSec('android',this)" style="
+          display:flex;align-items:center;gap:8px;padding:10px 24px;
+          border-radius:100px;border:2px solid var(--border);
+          background:var(--surface);color:var(--text2);
+          font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;">
+          🤖 Android
+        </button>
+      </div>
+
+      <!-- iPHONE -->
+      <div id="phone-iphone" style="position:relative;width:300px;">
+        <div style="
+          background:linear-gradient(145deg,#2a2a2a,#1a1a1a);
+          border-radius:50px;
+          padding:12px;
+          box-shadow:
+            0 40px 80px rgba(0,0,0,0.5),
+            0 0 0 1.5px rgba(255,255,255,0.15),
+            inset 0 0 0 1px rgba(0,0,0,0.8);
+        ">
+          <!-- Status bar -->
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 20px 4px;color:white;font-size:0.7rem;font-weight:600;">
+            <span>9:41</span>
+            <div style="display:flex;align-items:center;gap:1px;">
+              <!-- Signal bars -->
+              <div style="display:flex;align-items:flex-end;gap:1.5px;margin-right:4px;">
+                <div style="width:3px;height:4px;background:var(--surface);border-radius:1px;"></div>
+                <div style="width:3px;height:6px;background:var(--surface);border-radius:1px;"></div>
+                <div style="width:3px;height:8px;background:var(--surface);border-radius:1px;"></div>
+                <div style="width:3px;height:10px;background:var(--surface);border-radius:1px;"></div>
+              </div>
+              <!-- Wifi -->
+              <svg width="14" height="10" viewBox="0 0 14 10" fill="white" style="margin-right:4px;">
+                <path d="M7 7.5L8.5 9H5.5L7 7.5z"/>
+                <path d="M7 5.5C8.1 5.5 9.1 5.9 9.8 6.6L10.9 5.5C9.9 4.6 8.5 4 7 4S4.1 4.6 3.1 5.5L4.2 6.6C4.9 5.9 5.9 5.5 7 5.5z" opacity="0.7"/>
+                <path d="M7 3C8.8 3 10.4 3.7 11.6 4.8L12.7 3.7C11.2 2.4 9.2 1.5 7 1.5S2.8 2.4 1.3 3.7L2.4 4.8C3.6 3.7 5.2 3 7 3z" opacity="0.4"/>
+              </svg>
+              <!-- Battery -->
+              <div style="position:relative;width:22px;height:11px;border:1.5px solid rgba(255,255,255,0.7);border-radius:3px;">
+                <div style="position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:3px;height:5px;background:rgba(255,255,255,0.5);border-radius:0 2px 2px 0;"></div>
+                <div style="position:absolute;left:1px;top:1px;bottom:1px;width:75%;background:var(--surface);border-radius:1px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic island -->
+          <div style="
+            width:90px;height:26px;
+            background:#000;border-radius:20px;
+            margin:0 auto 6px;
+            display:flex;align-items:center;justify-content:center;gap:10px;
+          ">
+            <div style="width:10px;height:10px;border-radius:50%;background:#1a1a1a;border:1px solid #333;"></div>
+            <div style="width:8px;height:8px;border-radius:50%;background:#1a1a1a;border:1px solid #2a2a2a;"></div>
+          </div>
+
+          <!-- Ekran -->
+          <div style="border-radius:36px;overflow:hidden;height:560px;background:var(--surface2);position:relative;">
+            <iframe id="previewFrame" style="width:100%;height:100%;border:none;display:block;" src="about:blank"></iframe>
+          </div>
+
+          <!-- Home indicator -->
+          <div style="width:100px;height:4px;background:rgba(255,255,255,0.4);border-radius:100px;margin:10px auto 4px;"></div>
+        </div>
+        <!-- Yan butonlar -->
+        <div style="position:absolute;right:-3px;top:120px;width:3px;height:55px;background:linear-gradient(180deg,#444,#222);border-radius:0 3px 3px 0;"></div>
+        <div style="position:absolute;left:-3px;top:100px;width:3px;height:35px;background:linear-gradient(180deg,#444,#222);border-radius:3px 0 0 3px;"></div>
+        <div style="position:absolute;left:-3px;top:148px;width:3px;height:55px;background:linear-gradient(180deg,#444,#222);border-radius:3px 0 0 3px;"></div>
+        <div style="position:absolute;left:-3px;top:215px;width:3px;height:55px;background:linear-gradient(180deg,#444,#222);border-radius:3px 0 0 3px;"></div>
+      </div>
+
+      <!-- ANDROID -->
+      <div id="phone-android" style="position:relative;width:290px;display:none;">
+        <div style="
+          background:linear-gradient(145deg,#1e1e2e,#12121f);
+          border-radius:28px;
+          padding:10px;
+          box-shadow:
+            0 40px 80px rgba(0,0,0,0.5),
+            0 0 0 1px rgba(255,255,255,0.08),
+            inset 0 1px 0 rgba(255,255,255,0.05);
+        ">
+          <!-- Status bar -->
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 16px 6px;color:white;font-size:0.68rem;font-weight:500;">
+            <span>9:41</span>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <svg width="12" height="10" viewBox="0 0 12 10" fill="white" opacity="0.8">
+                <path d="M6 2L10.5 6.5L9 8L6 5L3 8L1.5 6.5L6 2z"/>
+              </svg>
+              <svg width="14" height="10" viewBox="0 0 14 10" fill="white" opacity="0.8">
+                <path d="M7 7.5L8.5 9H5.5L7 7.5z"/>
+                <path d="M7 5C8.3 5 9.4 5.5 10.2 6.3L11.3 5.2C10.2 4.1 8.7 3.5 7 3.5S3.8 4.1 2.7 5.2L3.8 6.3C4.6 5.5 5.7 5 7 5z" opacity="0.7"/>
+              </svg>
+              <div style="width:20px;height:10px;border:1.5px solid rgba(255,255,255,0.6);border-radius:2px;position:relative;">
+                <div style="position:absolute;right:-3px;top:50%;transform:translateY(-50%);width:2px;height:4px;background:rgba(255,255,255,0.4);border-radius:1px;"></div>
+                <div style="position:absolute;left:1px;top:1px;bottom:1px;width:70%;background:#6fcf97;border-radius:1px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kamera -->
+          <div style="width:12px;height:12px;border-radius:50%;background:#0a0a15;border:2px solid #2a2a3e;margin:0 auto 6px;box-shadow:0 0 0 1px rgba(255,255,255,0.05);"></div>
+
+          <!-- Ekran -->
+          <div style="border-radius:18px;overflow:hidden;height:560px;background:var(--surface2);position:relative;">
+            <iframe id="previewFrameAndroid" style="width:100%;height:100%;border:none;display:block;" src="about:blank"></iframe>
+          </div>
+
+          <!-- Nav bar -->
+          <div style="display:flex;justify-content:center;align-items:center;gap:32px;padding:10px 0 6px;">
+            <div style="width:18px;height:18px;border:2px solid rgba(255,255,255,0.4);border-radius:3px;"></div>
+            <div style="width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,0.3);"></div>
+            <div style="width:18px;height:3px;background:rgba(255,255,255,0.4);border-radius:100px;"></div>
+          </div>
+        </div>
+        <!-- Yan buton -->
+        <div style="position:absolute;right:-3px;top:130px;width:3px;height:50px;background:linear-gradient(180deg,#444,#222);border-radius:0 3px 3px 0;"></div>
+        <div style="position:absolute;left:-3px;top:110px;width:3px;height:30px;background:linear-gradient(180deg,#444,#222);border-radius:3px 0 0 3px;"></div>
+        <div style="position:absolute;left:-3px;top:150px;width:3px;height:50px;background:linear-gradient(180deg,#444,#222);border-radius:3px 0 0 3px;"></div>
+      </div>
+
+      <button onclick="yenile()" class="save-btn" style="width:auto;margin-top:24px;padding:9px 20px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Yenile</button>
+    </div>
+  </div>
+
+  <!-- RESTORAN BİLGİLERİ -->
+  <div class="page" id="page-restoran">
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:start;">
+      <div style="background:var(--surface);border-radius:14px;padding:24px;border:1px solid var(--border);">
+        <div style="width:56px;height:56px;background:rgba(152,193,176,0.15);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C8603C" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div id="rb-profil-ad" style="font-size:17px;font-weight:700;color:var(--text);margin-bottom:4px;">—</div>
+        <div id="rb-profil-adres" style="font-size:12px;color:var(--text2);margin-bottom:16px;">—</div>
+        <div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(34,197,94,0.08);border-radius:8px;border:0.5px solid rgba(34,197,94,0.2);width:fit-content;margin-bottom:20px;">
+          <div style="width:6px;height:6px;border-radius:50%;background:#22C55E;"></div>
+          <span style="font-size:11px;color:#22C55E;font-weight:500;">Yayında</span>
+        </div>
+        <div style="padding-top:16px;border-top:1px solid var(--border);">
+          <div style="font-size:10px;color:var(--text2);margin-bottom:10px;font-weight:600;letter-spacing:0.5px;">BAĞLANTILAR</div>
+          <div id="rb-profil-instagram" style="font-size:12px;color:var(--amber);margin-bottom:6px;">—</div>
+          <div id="rb-profil-website" style="font-size:12px;color:var(--text2);">—</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div style="background:var(--surface);border-radius:14px;padding:22px;border:1px solid var(--border);">
+          <div style="font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.5px;margin-bottom:16px;">TEMEL BİLGİLER</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div class="form-group" style="margin:0;"><label class="form-label">Restoran Adı</label><input class="form-input" id="rb-ad" placeholder="örn. Lezzet Durağı" type="text" oninput="restoranProfilGuncelle()"/></div>
+            <div class="form-group" style="margin:0;"><label class="form-label">Çalışma Saatleri</label><input class="form-input" id="rb-saat" placeholder="09:00 – 23:00" type="text"/></div>
+          </div>
+        </div>
+        <div style="background:var(--surface);border-radius:14px;padding:22px;border:1px solid var(--border);">
+          <div style="font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.5px;margin-bottom:16px;">İLETİŞİM & KONUM</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div class="form-group" style="margin:0;"><label class="form-label">Telefon</label><input class="form-input" id="rb-telefon" placeholder="+90 216 000 00 00" type="text"/></div>
+            <div class="form-group" style="margin:0;"><label class="form-label">Adres</label><input class="form-input" id="rb-adres" placeholder="örn. Kadıköy, İstanbul" type="text" oninput="restoranProfilGuncelle()"/></div>
+            <div class="form-group" style="margin:0;grid-column:1/-1;"><label class="form-label">Google Maps Linki</label><input class="form-input" id="rb-harita" placeholder="https://maps.google.com/..." type="text"/></div>
+          </div>
+        </div>
+        <div style="background:var(--surface);border-radius:14px;padding:22px;border:1px solid var(--border);">
+          <div style="font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.5px;margin-bottom:16px;">SOSYAL MEDYA</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div class="form-group" style="margin:0;"><label class="form-label">Instagram</label><input class="form-input" id="rb-instagram" placeholder="@kullaniciadı" type="text" oninput="restoranProfilGuncelle()"/></div>
+            <div class="form-group" style="margin:0;"><label class="form-label">Website</label><input class="form-input" id="rb-website" placeholder="https://restoranim.com" type="text" oninput="restoranProfilGuncelle()"/></div>
+          </div>
+        </div>
+        <button class="save-btn" onclick="restoranBilgileriKaydet()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg> Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-settings">
+    <div class="settings-grid">
+      <div class="settings-card" style="grid-column:1/-1;">
+        <div class="settings-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg> Font Ayarları</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:12px;">
+          <div>
+            <div style="font-size:10px;font-weight:600;color:var(--text2);letter-spacing:0.5px;margin-bottom:10px;">KOMBİNASYON</div>
+            <div style="display:flex;flex-direction:column;gap:6px;" id="fontKombList">
+              <div onclick="fontKombSec('Oswald','Montserrat',this)" data-bas="Oswald" data-metin="Montserrat" style="padding:10px 14px;border-radius:9px;background:rgba(200,133,42,0.08);border:1.5px solid var(--amber);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+                <div><div style="font-size:12px;font-weight:600;color:var(--amber);">Oswald + Montserrat</div><div style="font-size:10px;color:var(--text2);margin-top:1px;">Güçlü başlık, temiz metin</div></div>
+                <div class="fk-radio" style="width:16px;height:16px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><div style="width:6px;height:6px;border-radius:50%;background:white;"></div></div>
+              </div>
+              <div onclick="fontKombSec('Bebas Neue','Open Sans',this)" data-bas="Bebas Neue" data-metin="Open Sans" style="padding:10px 14px;border-radius:9px;border:1px solid var(--border);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+                <div><div style="font-size:12px;font-weight:500;color:var(--text);">Bebas Neue + Open Sans</div><div style="font-size:10px;color:var(--text2);margin-top:1px;">Dramatik başlık, okunaklı metin</div></div>
+                <div class="fk-radio" style="width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;"></div>
+              </div>
+              <div onclick="fontKombSec('Playfair Display','Montserrat',this)" data-bas="Playfair Display" data-metin="Montserrat" style="padding:10px 14px;border-radius:9px;border:1px solid var(--border);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+                <div><div style="font-size:12px;font-weight:500;color:var(--text);">Playfair Display + Montserrat</div><div style="font-size:10px;color:var(--text2);margin-top:1px;">Klasik zarif, modern metin</div></div>
+                <div class="fk-radio" style="width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;"></div>
+              </div>
+              <div onclick="fontKombSec('Cormorant Garamond','Inter',this)" data-bas="Cormorant Garamond" data-metin="Inter" style="padding:10px 14px;border-radius:9px;border:1px solid var(--border);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+                <div><div style="font-size:12px;font-weight:500;color:var(--text);">Cormorant Garamond + Inter</div><div style="font-size:10px;color:var(--text2);margin-top:1px;">Lüks serif, minimal metin</div></div>
+                <div class="fk-radio" style="width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;"></div>
+              </div>
+              <div onclick="fontKombSec('Poppins','Poppins',this)" data-bas="Poppins" data-metin="Poppins" style="padding:10px 14px;border-radius:9px;border:1px solid var(--border);cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+                <div><div style="font-size:12px;font-weight:500;color:var(--text);">Poppins SemiBold + Poppins Regular</div><div style="font-size:10px;color:var(--text2);margin-top:1px;">Modern, tutarlı aile</div></div>
+                <div class="fk-radio" style="width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;"></div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div>
+              <div style="font-size:10px;font-weight:600;color:var(--text2);letter-spacing:0.5px;margin-bottom:12px;">BOYUT AYARLARI</div>
+              <div style="display:flex;flex-direction:column;gap:14px;">
+                <div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:11px;color:var(--text);">Kategori adı</span><span style="font-size:11px;font-weight:600;color:var(--amber);" id="lbl-kat">18px</span></div>
+                  <input type="range" min="12" max="28" value="18" id="size-kat" oninput="document.getElementById('lbl-kat').textContent=this.value+'px';fontOnizleYeni()" style="width:100%;accent-color:#C8852A;"/>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:11px;color:var(--text);">Ürün adı</span><span style="font-size:11px;font-weight:600;color:var(--amber);" id="lbl-urun">16px</span></div>
+                  <input type="range" min="10" max="24" value="16" id="size-urun" oninput="document.getElementById('lbl-urun').textContent=this.value+'px';fontOnizleYeni()" style="width:100%;accent-color:#C8852A;"/>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:11px;color:var(--text);">Fiyat</span><span style="font-size:11px;font-weight:600;color:var(--amber);" id="lbl-fiyat">16px</span></div>
+                  <input type="range" min="10" max="24" value="16" id="size-fiyat" oninput="document.getElementById('lbl-fiyat').textContent=this.value+'px';fontOnizleYeni()" style="width:100%;accent-color:#C8852A;"/>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:600;color:var(--text2);letter-spacing:0.5px;margin-bottom:8px;">ÖNİZLEME</div>
+              <div style="background:var(--surface2);border-radius:10px;padding:14px;border:1px solid var(--border);">
+                <div id="onizle-kat" style="font-weight:600;color:var(--text);margin-bottom:4px;">Ana Yemekler</div>
+                <div id="onizle-urun-ad" style="font-weight:500;color:var(--text);margin-bottom:2px;">Köfte</div>
+                <div id="onizle-aciklama" style="color:var(--text2);font-size:12px;margin-bottom:4px;">8 adet köfte, pilav ile</div>
+                <div id="onizle-fiyat-txt" style="font-weight:700;color:var(--amber);">₺500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="save-btn" onclick="tasarimKaydet()" style="margin-top:16px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg> Tasarımı Kaydet</button>
+      </div>
+
+      <!-- DİL AYARLARI -->
+      <div class="settings-card">
+        <div class="settings-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Dil Ayarları</div>
+        <div class="lang-list">
+          <div class="lang-row">
+            <div><span class="lang-flag">🇹🇷</span><span class="lang-name">Türkçe</span></div>
+            <button class="toggle on" onclick="toggleLang(this)"></button>
+          </div>
+          <div class="lang-row">
+            <div><span class="lang-flag">🇬🇧</span><span class="lang-name">İngilizce</span></div>
+            <button class="toggle on" onclick="toggleLang(this)"></button>
+          </div>
+          <div class="lang-row">
+            <div><span class="lang-flag">🇸🇦</span><span class="lang-name">Arapça</span></div>
+            <button class="toggle off" onclick="toggleLang(this)"></button>
+          </div>
+          <div class="lang-row">
+            <div><span class="lang-flag">🇩🇪</span><span class="lang-name">Almanca</span></div>
+            <button class="toggle off" onclick="toggleLang(this)"></button>
+          </div>
+          <div class="lang-row">
+            <div><span class="lang-flag">🇷🇺</span><span class="lang-name">Rusça</span></div>
+            <button class="toggle off" onclick="toggleLang(this)"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- GENEL AYARLAR -->
+      <div class="settings-card">
+        <div class="settings-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg> Genel Ayarlar</div>
+        <div class="form-group">
+          <label class="form-label">Para Birimi</label>
+          <select class="form-input form-select">
+            <option>₺ Türk Lirası</option>
+            <option>$ Amerikan Doları</option>
+            <option>€ Euro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Çalışma Saatleri</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <input class="form-input" type="time" value="09:00"/>
+            <input class="form-input" type="time" value="23:00"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">WiFi Şifresi (Menüde göster)</label>
+          <input class="form-input" placeholder="Opsiyonel" type="text"/>
+        </div>
+        <button class="save-btn"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg> Kaydet</button>
+      </div>
+
+    </div>
+  </div>
+  </div><!-- /content-frame -->
+
+</main>
+
+<!-- MODAL: Yemek Ekle / Düzenle -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Yeni Yemek Ekle</div>
+    <input type="hidden" id="editItemId"/>
+    <div class="form-group">
+      <label class="form-label">Yemek Adı</label>
+      <input class="form-input" id="newItemName" placeholder="örn. Adana Kebap" type="text" oninput="emojiOnerAd(this.value)"/>
+      <div id="emojiOneriler" style="display:none;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;"></div>
+      <div style="display:flex;margin-top:6px;border-radius:10px;overflow:hidden;border:1.5px solid rgba(44,26,14,0.12);">
+        <div onclick="cevir('newItemName','newItemNameEn')" style="background:var(--brown);color:white;padding:10px 12px;font-size:11px;font-weight:700;display:flex;align-items:center;flex-shrink:0;cursor:pointer;transition:background 0.15s;" title="Tıkla — otomatik çevir">EN</div>
+        <input class="form-input" id="newItemNameEn" placeholder="Tıkla veya yaz..." type="text" style="border:none;border-radius:0;margin:0;" oninput="emojiOnerAd(this.value,'emojiOnerilerNameEn')"/>
+      </div>
+      <div id="emojiOnerilerNameEn" style="display:none;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Açıklama</label>
+      <input class="form-input" id="newItemDesc" placeholder="Kısa bir açıklama..." type="text" oninput="emojiOnerAd(this.value,'emojiOnerilerDesc')"/>
+      <div id="emojiOnerilerDesc" style="display:none;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;"></div>
+      <div style="display:flex;margin-top:6px;border-radius:10px;overflow:hidden;border:1.5px solid rgba(44,26,14,0.12);">
+        <div onclick="cevir('newItemDesc','newItemDescEn')" style="background:var(--brown);color:white;padding:10px 12px;font-size:11px;font-weight:700;display:flex;align-items:center;flex-shrink:0;cursor:pointer;transition:background 0.15s;" title="Tıkla — otomatik çevir">EN</div>
+        <input class="form-input" id="newItemDescEn" placeholder="Tıkla veya yaz..." type="text" style="border:none;border-radius:0;margin:0;" oninput="emojiOnerAd(this.value,'emojiOnerilerDescEn')"/>
+      </div>
+      <div id="emojiOnerilerDescEn" style="display:none;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="form-group">
+        <label class="form-label">Fiyat (₺)</label>
+        <input class="form-input" id="newItemPrice" placeholder="0" type="number"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Kategori</label>
+        <select class="form-input form-select" id="newItemCat">
+          <option>Yükleniyor...</option>
+        </select>
+      </div>
+    </div>
+    <input type="hidden" id="newItemEmoji" value="🍽️"/>
+    <div class="form-group">
+      <label class="form-label">Fotoğraf</label>
+      <div id="fotografArea" style="border:2px dashed rgba(44,26,14,0.15);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:all 0.15s;" onclick="document.getElementById('fotografInput').click()">
+        <div id="fotografPreview" style="display:none;"><img id="fotografImg" style="width:100%;height:120px;object-fit:cover;border-radius:8px;"/></div>
+        <div id="fotografPlaceholder">
+          <div style="font-size:1.5rem;margin-bottom:6px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+          <div style="font-size:0.8rem;color:var(--warm-gray);">Fotoğraf yüklemek için tıkla</div>
+          <div style="font-size:0.72rem;color:rgba(154,143,133,0.6);margin-top:2px;">JPG, PNG — max 2MB</div>
+        </div>
+      </div>
+      <input type="file" id="fotografInput" accept="image/*" style="display:none;" onchange="fotografSec(this)"/>
+      <input type="hidden" id="mevcutFotografUrl"/>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border-radius:10px;margin-bottom:4px;">
+      <div>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--brown);">Yemek Durumu</div>
+        <div style="font-size:0.72rem;color:var(--warm-gray);" id="aktifLabel">Aktif — Müşteriler görebilir</div>
+      </div>
+      <button class="toggle on" id="aktifToggle" onclick="toggleAktif(this)" type="button"></button>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> İptal</button>
+      <button class="modal-save" id="modalSaveBtn" onclick="kaydetItem()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Ekle</button>
+    </div>
+  </div>
+</div>
+
+<!-- KATEGORİ MODAL -->
+<div class="modal-overlay" id="kategoriModal">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div class="modal-title" style="margin-bottom:0;" id="kategoriModalTitle">Yeni Kategori</div>
+      <button onclick="closeKategoriModal()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--warm-gray);">✕</button>
+    </div>
+    <input type="hidden" id="editKategoriId"/>
+    <div class="form-group">
+      <label class="form-label">Kategori Adı</label>
+      <input class="form-input" id="kategoriAd" placeholder="örn. Ana Yemekler" type="text" oninput="emojiOnerAd(this.value,'kategoriEmojiOneriler')"/>
+      <div id="kategoriEmojiOneriler" style="display:none;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
+      <div style="display:flex;margin-top:6px;border-radius:10px;overflow:hidden;border:1.5px solid rgba(44,26,14,0.12);">
+        <div onclick="cevir('kategoriAd','kategoriAdEn')" style="background:var(--brown);color:white;padding:10px 12px;font-size:11px;font-weight:700;display:flex;align-items:center;flex-shrink:0;cursor:pointer;transition:background 0.15s;" title="Tıkla — otomatik çevir">EN</div>
+        <input class="form-input" id="kategoriAdEn" placeholder="Tıkla veya yaz..." type="text" style="border:none;border-radius:0;margin:0;" oninput="emojiOnerAd(this.value,'kategoriEmojiOnerilerEn')"/>
+      </div>
+      <div id="kategoriEmojiOnerilerEn" style="display:none;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fotoğraf</label>
+      <div id="kategoriFotoArea" style="border:2px dashed rgba(44,26,14,0.15);border-radius:12px;padding:16px;text-align:center;cursor:pointer;" onclick="document.getElementById('kategoriFotoInput').click()">
+        <div id="kategoriFotoPreview" style="display:none;"><img id="kategoriFotoImg" style="width:100%;height:100px;object-fit:cover;border-radius:8px;"/></div>
+        <div id="kategoriFotoPlaceholder">
+          <div style="font-size:1.5rem;margin-bottom:6px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+          <div style="font-size:0.8rem;color:var(--warm-gray);">Fotoğraf yükle (opsiyonel)</div>
+        </div>
+      </div>
+      <input type="file" id="kategoriFotoInput" accept="image/*" style="display:none;" onchange="kategoriFotoSec(this)"/>
+      <input type="hidden" id="mevcutKategoriFotoUrl"/>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border-radius:10px;margin-bottom:4px;">
+      <div>
+        <div style="font-size:0.82rem;font-weight:600;color:var(--brown);">Durum</div>
+        <div style="font-size:0.72rem;color:var(--warm-gray);" id="kategoriAktifLabel">Aktif</div>
+      </div>
+      <button class="toggle on" id="kategoriAktifToggle" onclick="toggleKategoriAktif(this)" type="button"></button>
+    </div>
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="modal-cancel" onclick="closeKategoriModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> İptal</button>
+      <button class="modal-save" id="kategoriSaveBtn" onclick="kaydetKategori()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Ekle</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ONAY MODALI -->
+<div class="modal-overlay" id="onayModal">
+  <div class="modal" style="max-width:380px;text-align:center;">
+    <div style="width:48px;height:48px;background:rgba(139,58,58,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;" id="onayIkon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B3A3A" stroke-width="2" style="flex-shrink:0;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg></div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:8px;" id="onayBaslik">Silmek istediğinize emin misiniz?</div>
+    <div style="font-size:0.82rem;color:var(--warm-gray);margin-bottom:24px;" id="onayAciklama">Bu işlem geri alınamaz.</div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="onayIptal()" style="flex:1;padding:12px;border-radius:10px;border:1.5px solid rgba(61,43,43,0.1);background:#FDFAF7;font-family:'Inter',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;color:var(--warm-gray);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> İptal</button>
+      <button id="onayOkBtn" onclick="onayOnayla()" style="flex:1;padding:12px;border-radius:10px;border:none;background:var(--danger);color:white;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;">Sil</button>
+    </div>
+  </div>
+</div>
+
+<!-- DUPLICATE MODAL -->
+<div class="modal-overlay" id="dupModal">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div class="modal-title" style="margin-bottom:0;">Yemeği Kopyala</div>
+      <button onclick="closeDupModal()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--warm-gray);">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">YENİ BAŞLIK</label>
+      <input class="form-input" id="dupItemName" type="text"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">DURUM</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div id="dupActive" onclick="selectDupStatus('active')" style="padding:14px;border-radius:12px;border:2px solid var(--amber);cursor:pointer;display:flex;align-items:center;gap:10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <div><div style="font-size:0.85rem;font-weight:600;">Aktif</div><div style="font-size:0.72rem;color:var(--warm-gray);">Müşteriler görebilir</div></div>
+        </div>
+        <div id="dupInactive" onclick="selectDupStatus('inactive')" style="padding:14px;border-radius:12px;border:1.5px solid rgba(44,26,14,0.12);cursor:pointer;display:flex;align-items:center;gap:10px;">
+          <span style="font-size:1.2rem;">⭕</span>
+          <div><div style="font-size:0.85rem;font-weight:600;">Pasif</div><div style="font-size:0.72rem;color:var(--warm-gray);">Müşterilerden gizli</div></div>
+        </div>
+      </div>
+    </div>
+    <input type="hidden" id="dupItemId"/>
+    <input type="hidden" id="dupStatus" value="active"/>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeDupModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> İptal</button>
+      <button class="modal-save" onclick="confirmDuplicate()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Kopyala</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// DATA
+const days = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+const chartData = [0,0,0,0,0,0,0];
+const popular = [];
+let categories = ['Tümü','Başlangıçlar','Ana Yemekler','Kebaplar','İçecekler','Tatlılar'];
+let activeCategory = 'Tümü';
+let menuItems = [];
+let currentUser = null;
+const { createClient } = supabase;
+const sb = createClient('https://jnwzikjupyztkzeejzwy.supabase.co','sb_publishable_twuU8jsnmfqBhFMpxfUAzQ_0mHBXwa_');
+
+async function analitigiYukle(){
+  if(!currentUser) return;
+
+  // Son 7 günün taramaları
+  const yediGunOnce = new Date(Date.now()-7*24*60*60*1000).toISOString();
+  const {data:taramalar} = await sb.from('taramalar')
+    .select('*').eq('user_id',currentUser.id)
+    .gte('tarih',yediGunOnce).order('tarih');
+
+  if(!taramalar) return;
+
+  // Toplam tarama sayısı
+  const menuTaramalari = taramalar.filter(t=>t.sayfa==='menu');
+  document.querySelectorAll('.stat-value')[0].textContent = menuTaramalari.length.toLocaleString();
+
+  // Son 7 gün grafiği
+  const gunler = {};
+  for(let i=6;i>=0;i--){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const key = d.toISOString().split('T')[0];
+    gunler[key] = 0;
+  }
+  menuTaramalari.forEach(t=>{
+    const key = t.tarih.split('T')[0];
+    if(gunler[key]!==undefined) gunler[key]++;
+  });
+  const gunVeri = Object.values(gunler);
+  gunVeri.forEach((v,i)=>chartData[i]=v);
+  buildChart();
+
+  // En çok görüntülenen ürünler
+  const urunTaramalari = taramalar.filter(t=>t.sayfa==='urun'&&t.urun_id);
+  const urunSayac = {};
+  urunTaramalari.forEach(t=>{
+    urunSayac[t.urun_id] = (urunSayac[t.urun_id]||0)+1;
+  });
+  const sirali = Object.entries(urunSayac).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxCount = sirali[0]?.[1]||1;
+  popular.length=0;
+  for(const [id,count] of sirali){
+    const item = menuItems.find(m=>m.id===parseInt(id));
+    if(item) popular.push({name:item.name, count, pct:Math.round(count/maxCount*100)});
+  }
+  if(!popular.length) popular.push({name:'Henüz veri yok',count:0,pct:0});
+  buildPopular('popularList');
+  buildPopular('popularList2');
+
+  // Saatlik yoğunluk ısı haritası
+  buildHeatmap(taramalar);
+
+  // Ülke istatistikleri
+  const ulkeSayac = {};
+  taramalar.forEach(t=>{if(t.ulke){ulkeSayac[t.ulke]=(ulkeSayac[t.ulke]||0)+1;}});
+  const ulkeEl = document.getElementById('ulkeListesi');
+  if(ulkeEl){
+    const siraliUlke = Object.entries(ulkeSayac).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    ulkeEl.innerHTML = siraliUlke.length
+      ? siraliUlke.map(([ulke,sayi])=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(44,26,14,0.06);">
+          <span style="font-size:0.85rem;">${ulke}</span>
+          <span style="font-size:0.85rem;font-weight:600;color:var(--amber);">${sayi}</span>
+        </div>`).join('')
+      : '<div style="font-size:0.82rem;color:var(--warm-gray);padding:12px 0;">Henüz veri yok</div>';
+  }
+
+  // Bu hafta / geçen hafta karşılaştırma
+  const buHafta = menuTaramalari.filter(t=>new Date(t.tarih)>=new Date(Date.now()-7*24*60*60*1000)).length;
+  document.querySelectorAll('.stat-value')[0].textContent = buHafta.toLocaleString();
+}
+
+async function menuYukle(){
+  if(!currentUser) return;
+  const {data,error}=await sb.from('menu_items').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});
+  if(error){showToast('Yemekler yüklenemedi');return;}
+  menuItems=(data||[]).map(d=>({id:d.id,name:d.ad,desc:d.aciklama||'',price:d.fiyat,cat:d.kategori,emoji:d.emoji||'🍽️',active:d.aktif,fotograf_url:d.fotograf_url||null,name_en:d.ad_en||'',desc_en:d.aciklama_en||''}));
+  buildMenu();
+  document.querySelectorAll('.stat-value')[1].textContent=menuItems.length;
+}
+const tables = [
+  {num:1,occupied:true,scans:12},{num:2,occupied:false,scans:8},
+  {num:3,occupied:true,scans:21},{num:4,occupied:true,scans:5},
+  {num:5,occupied:false,scans:3},{num:6,occupied:true,scans:17},
+  {num:7,occupied:true,scans:9},{num:8,occupied:false,scans:0},
+  {num:9,occupied:true,scans:14},{num:10,occupied:false,scans:6},
+  {num:11,occupied:true,scans:11},{num:12,occupied:false,scans:2},
+];
+
+// CHART
+function buildChart(){
+  const wrap = document.getElementById('chartBars');
+  const labels = document.getElementById('chartLabels');
+  const max = Math.max(...chartData);
+  wrap.innerHTML=''; labels.innerHTML='';
+  chartData.forEach((v,i)=>{
+    const bw = document.createElement('div'); bw.className='bar-wrap';
+    const b = document.createElement('div'); b.className='bar';
+    b.style.height=(v/max*100)+'%';
+    b.title=v+' tarama';
+    bw.appendChild(b);
+    wrap.appendChild(bw);
+    const l = document.createElement('div');
+    l.style.cssText='font-size:0.65rem;color:var(--warm-gray);flex:1;text-align:center;';
+    l.textContent=days[i]; labels.appendChild(l);
+  });
+}
+
+// POPULAR
+function buildPopular(id){
+  const el = document.getElementById(id); if(!el) return;
+  el.innerHTML='';
+  popular.forEach((item,i)=>{
+    el.innerHTML+=`<div class="popular-item">
+      <div class="popular-rank">${i+1}</div>
+      <div class="popular-name">${item.name}</div>
+      <div class="popular-bar-wrap"><div class="popular-bar" style="width:${item.pct}%"></div></div>
+      <div class="popular-count">${item.count}</div>
+    </div>`;
+  });
+}
+
+// MENU
+function buildMenu(){
+  const grid = document.getElementById('menuGrid');
+  if(!grid) return;
+  grid.innerHTML='';
+
+  // Aktif kategoriye göre filtrele
+  const filtered = aktifKategoriAdiVar
+    ? menuItems.filter(m=>m.cat===aktifKategoriAdiVar)
+    : menuItems;
+
+  if(filtered.length===0){
+    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--warm-gray);">
+      <div style="width:52px;height:52px;background:var(--surface2);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><polyline points="17 21 17 13 7 13 7 21"/><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg></div>
+      <div style="font-size:0.9rem;">Bu kategoride henüz ürün yok.</div>
+      <div style="font-size:0.8rem;margin-top:6px;">Sağ üstten ürün ekleyebilirsiniz.</div>
+    </div>`;
+  }
+
+  filtered.forEach((item)=>{
+    const card = document.createElement('div');
+    card.className='menu-item-card';
+    card.draggable=true;
+    card.dataset.id=item.id;
+    card.innerHTML=`
+      <div class="menu-item-img">
+        ${item.fotograf_url?`<img src="${item.fotograf_url}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy"/>`:`<span style="font-size:1.8rem;">${item.emoji}</span>`}
+        <span class="menu-item-badge ${item.active?'badge-active':'badge-passive'}">${item.active?'Aktif':'Pasif'}</span>
+        <div style="position:absolute;top:8px;left:8px;cursor:grab;font-size:1rem;opacity:0.5;" title="Sürükle">⠿</div>
+      </div>
+      <div class="menu-item-body">
+        <div class="menu-item-name">${item.name}</div>
+        <div class="menu-item-desc">${item.desc||''}</div>
+        <div class="menu-item-footer">
+          <div class="menu-item-price">₺${item.price}</div>
+          <div class="menu-item-actions">
+            <button class="icon-btn icon-btn-edit" onclick="editItem(${item.id})" title="Düzenle"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>
+            <button class="icon-btn" style="background:rgba(107,126,94,0.1);color:#4a7a5a;" onclick="duplicateItem(${item.id})" title="Kopyala"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+            <button class="icon-btn icon-btn-del" onclick="deleteItem(${item.id})" title="Sil"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg></button>
+          </div>
+        </div>
+      </div>`;
+
+    card.addEventListener('dragstart', e=>{e.dataTransfer.setData('text/plain', item.id); card.style.opacity='0.4';});
+    card.addEventListener('dragend', ()=>card.style.opacity='1');
+    card.addEventListener('dragover', e=>{e.preventDefault(); card.style.borderColor='var(--amber)';});
+    card.addEventListener('dragleave', ()=>card.style.borderColor='');
+    card.addEventListener('drop', async e=>{
+      e.preventDefault(); card.style.borderColor='';
+      const draggedId = parseInt(e.dataTransfer.getData('text/plain'));
+      const targetId = item.id;
+      if(draggedId === targetId) return;
+      const draggedIdx = menuItems.findIndex(m=>m.id===draggedId);
+      const targetIdx = menuItems.findIndex(m=>m.id===targetId);
+      // Önce local güncelle — anında görünür
+      const temp = menuItems[draggedIdx];
+      menuItems[draggedIdx] = menuItems[targetIdx];
+      menuItems[targetIdx] = temp;
+      buildMenu();
+      showToast('🔀 Sıra güncellendi!');
+      // Arka planda veritabanına yaz
+      sb.from('menu_items').update({sira_no:targetIdx}).eq('id',draggedId);
+      sb.from('menu_items').update({sira_no:draggedIdx}).eq('id',targetId);
+    });
+
+    grid.appendChild(card);
+  });
+
+  // Ürün Ekle kartı — grid'in son elemanı
+  const addItem = document.createElement('div');
+  addItem.onclick = openModal;
+  addItem.style.cssText = `background:var(--surface);border-radius:${urunAyarlar.kose}px;overflow:hidden;border:1.5px dashed var(--border);cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:${urunAyarlar.fotoH+60}px;color:var(--text2);`;
+  addItem.innerHTML = `<div style="width:36px;height:36px;border-radius:50%;border:1.5px dashed currentColor;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><span style="font-size:12px;font-weight:500;">Ürün Ekle</span>`;
+  addItem.onmouseenter = () => { addItem.style.borderColor='var(--amber)'; addItem.style.color='var(--amber)'; };
+  addItem.onmouseleave = () => { addItem.style.borderColor='var(--border)'; addItem.style.color='var(--text2)'; };
+  grid.appendChild(addItem);
+}
+function buildQR(){
+  const uid = currentUser ? currentUser.id : '';
+  const menuUrl = window.location.href.replace('sofraQR-dashboard.html','sofraQR-menu.html') + '?uid=' + uid;
+
+  document.getElementById('qrUrl').textContent = menuUrl;
+
+  const qrEl = document.getElementById('anaQR');
+  qrEl.innerHTML = '';
+
+  new QRCode(qrEl, {
+    text: menuUrl,
+    width: 200,
+    height: 200,
+    colorDark: '#2C1A0E',
+    colorLight: '#FFFFFF',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+}
+
+function qrIndir(){
+  const img = document.querySelector('#anaQR img');
+  if(!img){showToast('QR hazır değil, lütfen bekleyin.');return;}
+  const a = document.createElement('a');
+  a.href = img.src;
+  a.download = 'menu-qr.png';
+  a.click();
+  showToast('📥 QR kod indirildi!');
+}
+
+function qrYazdir(){
+  const img = document.querySelector('#anaQR img');
+  if(!img){showToast('QR hazır değil, lütfen bekleyin.');return;}
+  const win = window.open('','_blank');
+  win.document.write(`
+    <html><body style="text-align:center;padding:40px;font-family:sans-serif;">
+    <h2 style="margin-bottom:8px;">Dijital Menümüz</h2>
+    <p style="color:var(--text2);margin-bottom:20px;font-size:14px;">Menümüzü görmek için QR kodu okutun</p>
+    <img src="${img.src}" style="width:220px;height:220px;"/>
+    <p style="margin-top:16px;font-size:12px;color:#ccc;">SofraQR ile hazırlandı</p>
+    </body></html>`);
+  win.document.close();
+  setTimeout(()=>win.print(), 500);
+}
+
+// TABLES
+function buildTables(){
+  const grid = document.getElementById('tablesGrid');
+  grid.innerHTML='';
+  tables.forEach(t=>{
+    const d=document.createElement('div');
+    d.className='table-card '+(t.occupied?'occupied':'empty');
+    d.innerHTML=`<div class="table-icon">${t.occupied?'🍽️':'🪑'}</div>
+      <div class="table-num">Masa ${t.num}</div>
+      <div class="table-status">${t.occupied?'Dolu':'Boş'}</div>
+      <div class="table-scans">${t.scans} tarama bu hafta</div>`;
+    d.onclick=()=>{t.occupied=!t.occupied;buildTables();showToast(`Masa ${t.num} ${t.occupied?'dolu':'boş'} olarak işaretlendi`);};
+    grid.appendChild(d);
+  });
+  const add=document.createElement('div');
+  add.className='table-card empty';
+  add.style.border='2px dashed rgba(44,26,14,0.15)';
+  add.innerHTML='<div class="table-icon" style="font-size:1.2rem;">+</div><div class="table-num" style="font-size:1rem;font-family:DM Sans">Masa Ekle</div>';
+  add.onclick=()=>showToast('Yeni masa eklendi');
+  grid.appendChild(add);
+}
+
+// HEATMAP
+function buildHeatmap(taramalar){
+  const hm=document.getElementById('heatmap');
+  if(!hm) return;
+  hm.innerHTML='';
+  const saatSayac=new Array(24).fill(0);
+  (taramalar||[]).forEach(t=>{
+    const saat=new Date(t.tarih).getHours();
+    saatSayac[saat]++;
+  });
+  const max=Math.max(...saatSayac,1);
+  // 4 satır x 6 sütun = 24 saat göster
+  for(let i=0;i<24;i++){
+    const c=document.createElement('div'); c.className='heat-cell';
+    const pct=saatSayac[i]/max;
+    c.style.background=`rgba(200,133,42,${0.05+pct*0.85})`;
+    c.title=`${String(i).padStart(2,'0')}:00 — ${saatSayac[i]} tarama`;
+    hm.appendChild(c);
+  }
+}
+
+// NAV
+function temaDegistir(tema){
+  const body=document.body;
+  const acikBtn=document.getElementById('temaAcik');
+  const koyuBtn=document.getElementById('temaKoyu');
+  if(tema==='koyu'){
+    body.classList.add('dark-mode');body.classList.remove('light-mode');
+    acikBtn.classList.remove('active');koyuBtn.classList.add('active');
+    koyuBtn.querySelector('svg').setAttribute('stroke','white');
+    acikBtn.querySelector('svg').setAttribute('stroke','rgba(255,255,255,0.4)');
+    localStorage.setItem('sofraQR-tema','koyu');
+  } else {
+    body.classList.remove('dark-mode');body.classList.add('light-mode');
+    acikBtn.classList.add('active');koyuBtn.classList.remove('active');
+    acikBtn.querySelector('svg').setAttribute('stroke','white');
+    koyuBtn.querySelector('svg').setAttribute('stroke','rgba(255,255,255,0.4)');
+    localStorage.setItem('sofraQR-tema','acik');
+  }
+}
+
+function restoranProfilGuncelle(){
+  const ad=document.getElementById('rb-ad')?.value||'—';
+  const adres=document.getElementById('rb-adres')?.value||'—';
+  const ig=document.getElementById('rb-instagram')?.value||'—';
+  const web=document.getElementById('rb-website')?.value||'—';
+  const e1=document.getElementById('rb-profil-ad');const e2=document.getElementById('rb-profil-adres');
+  const e3=document.getElementById('rb-profil-instagram');const e4=document.getElementById('rb-profil-website');
+  if(e1)e1.textContent=ad;if(e2)e2.textContent=adres;if(e3)e3.textContent=ig;if(e4)e4.textContent=web;
+}
+
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+
+  const restoranAdi=document.querySelector('.sidebar-restaurant-name')?.textContent||'Restoran';
+  const ikonlar={
+    dashboard:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C8603C" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+    menu:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C8603C" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>',
+    qr:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C8603C" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>',
+    analytics:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C8603C" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+    restoran:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C8603C" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+    preview:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C8603C" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
+    settings:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C8603C" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>',
+  };
+  const basliklar={dashboard:'Dashboard',menu:'Menü Yönetimi',qr:'QR Kodlar',analytics:'Analitik',restoran:'Restoran Bilgileri',preview:'Telefon Görünümü',settings:'Dil & Tasarım'};
+  const altlar={};
+
+  const ikon=document.getElementById('topbarIcon');
+  if(ikon)ikon.innerHTML=ikonlar[id]||ikonlar.dashboard;
+  const bc=document.getElementById('topbarBreadcrumb');
+  if(bc)bc.textContent=restoranAdi;
+  const pt=document.getElementById('pageTitle');
+  if(pt)pt.textContent=basliklar[id]||id;
+  const badge=document.getElementById('topbarBadge');
+  if(badge){
+    if(id==='menu'){badge.textContent=`${kategorilerData.length} kategori · ${menuItems.length} ürün`;badge.style.display='';}
+    else badge.style.display='none';
+  }
+
+  const row=document.getElementById('topbarActionRow');
+  const btn=document.getElementById('topbarAction');
+  if(row) row.style.display='none';
+  if(btn) btn.style.display='none';
+
+  if(id==='menu'){geriKategorilere();menuAyarYukle();}
+  else if(id==='analytics') analitigiYukle();
+  else if(id==='restoran') restoranBilgileriYukle();
+  else if(id==='preview') setTimeout(()=>yenile(),100);
+  else if(id==='settings') tasarimYukle();
+}
+
+// MODAL
+let aktifKategoriId = null;
+let aktifKategoriAdiVar = '';
+
+function geriKategorilere(){
+  aktifKategoriId = null;
+  aktifKategoriAdiVar = '';
+  document.getElementById('view-kategoriler').style.display='block';
+  document.getElementById('view-urunler').style.display='none';
+  // Kategori toolbar göster, ürün toolbar gizle
+  const menuTB = document.getElementById('menuToolbarBtn');
+  const urunTB = document.getElementById('urunToolbarBtn');
+  const urunTP = document.getElementById('urunToolbarPanel');
+  const menuTBWrap=document.getElementById('menuToolbarBtnWrap')||menuTB?.parentElement; if(menuTBWrap)menuTBWrap.style.display='flex';
+  const urunTBWrap2=document.getElementById('urunToolbarBtnWrap'); if(urunTBWrap2)urunTBWrap2.style.display='none';
+  if(urunTP) urunTP.style.display='none';
+  const btn=document.getElementById('topbarAction');
+  if(btn){btn.textContent='+ Kategori Ekle';btn.onclick=openKategoriModal;}
+  if(kategorilerData.length > 0){
+    kategoriKartCiz(document.getElementById('kategoriGrid'), kategorilerData);
+  } else {
+    kategorileriYukle();
+  }
+}
+
+function kategoriAc(id, ad){
+  aktifKategoriId = id;
+  aktifKategoriAdiVar = ad;
+  document.getElementById('view-kategoriler').style.display='none';
+  document.getElementById('view-urunler').style.display='block';
+  document.getElementById('aktifKategoriAdi').textContent = ad;
+  // Kategori toolbar gizle, ürün toolbar göster
+  const menuTB = document.getElementById('menuToolbarBtn');
+  const urunTB = document.getElementById('urunToolbarBtn');
+  const menuTP = document.getElementById('menuToolbarPanel');
+  const menuTBWrap2=document.getElementById('menuToolbarBtnWrap')||menuTB?.parentElement; if(menuTBWrap2)menuTBWrap2.style.display='none';
+  if(menuTP) menuTP.style.display='none';
+  const urunTBWrap=document.getElementById('urunToolbarBtnWrap'); if(urunTBWrap)urunTBWrap.style.display='flex';
+  const btn=document.getElementById('topbarAction');
+  if(btn){btn.textContent='+ Ürün Ekle';btn.onclick=openModal;btn.style.display='';}
+  buildMenu();
+}
+
+// KATEGORİ FONKSİYONLARI
+let kategorilerData = [];
+
+function kategoriKartCiz(grid, data){
+  grid.innerHTML='';
+  data.forEach(k=>{
+    const card = document.createElement('div');
+    card.style.cssText=`background:var(--surface);border-radius:${menuAyarlar.kose}px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:box-shadow 0.15s;position:relative;`;
+    card.className='kat-kart-wrap';
+    card.innerHTML=`
+      ${k.fotograf_url
+        ? `<div class="kat-foto-alan" style="width:100%;height:${menuAyarlar.fotoH}px;overflow:hidden;position:relative;"><img src="${k.fotograf_url}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy"/>
+            <div style="position:absolute;top:8px;left:8px;width:24px;height:24px;background:rgba(0,0,0,0.4);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:grab;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="9" cy="5" r="1" fill="white"/><circle cx="9" cy="12" r="1" fill="white"/><circle cx="9" cy="19" r="1" fill="white"/><circle cx="15" cy="5" r="1" fill="white"/><circle cx="15" cy="12" r="1" fill="white"/><circle cx="15" cy="19" r="1" fill="white"/></svg>
+            </div>
+            <span style="position:absolute;top:8px;right:8px;font-size:0.65rem;padding:3px 8px;border-radius:100px;background:${k.aktif?'rgba(34,197,94,0.85)':'rgba(220,38,38,0.85)'};color:white;font-weight:500;backdrop-filter:blur(4px);">${k.aktif?'Aktif':'Pasif'}</span>
+           </div>`
+        : `<div class="kat-foto-alan" style="height:${menuAyarlar.fotoH}px;width:100%;background:linear-gradient(135deg,var(--surface2),var(--border));display:flex;align-items:center;justify-content:center;position:relative;">
+            <div style="position:absolute;top:8px;left:8px;width:24px;height:24px;background:rgba(0,0,0,0.15);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:grab;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2"><circle cx="9" cy="5" r="1" fill="currentColor"/><circle cx="9" cy="12" r="1" fill="currentColor"/><circle cx="9" cy="19" r="1" fill="currentColor"/><circle cx="15" cy="5" r="1" fill="currentColor"/><circle cx="15" cy="12" r="1" fill="currentColor"/><circle cx="15" cy="19" r="1" fill="currentColor"/></svg>
+            </div>
+            <span style="position:absolute;top:8px;right:8px;font-size:0.65rem;padding:3px 8px;border-radius:100px;background:${k.aktif?'rgba(34,197,94,0.85)':'rgba(220,38,38,0.85)'};color:white;font-weight:500;">${k.aktif?'Aktif':'Pasif'}</span>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5" opacity="0.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+           </div>`
+      }
+      <div style="padding:12px;background:var(--surface);">
+        <div class="kat-kart-ad" style="font-size:${menuAyarlar.katFont}px;font-weight:600;margin-bottom:6px;color:var(--text);">${k.ad}</div>
+        <div style="display:flex;align-items:center;justify-content:flex-end;">
+          <div style="display:flex;gap:6px;">
+            <button onclick="event.stopPropagation();duplicateKategori(${k.id})" style="background:rgba(44,62,45,0.08);border:none;width:28px;height:28px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;" title="Kopyala"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" style="flex-shrink:0;"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+            <button onclick="event.stopPropagation();editKategori(${k.id})" style="background:rgba(200,96,60,0.1);border:none;width:28px;height:28px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C8603C" stroke-width="2" style="flex-shrink:0;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/></svg></button>
+            <button onclick="event.stopPropagation();deleteKategori(${k.id})" style="background:rgba(139,58,58,0.08);border:none;width:28px;height:28px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B3A3A" stroke-width="2" style="flex-shrink:0;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg></button>
+          </div>
+        </div>
+      </div>`;
+    card.draggable=true;
+    card.dataset.id=k.id;
+    card.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',String(k.id));card.style.opacity='0.4';});
+    card.addEventListener('dragend',()=>card.style.opacity='1');
+    card.addEventListener('dragover',e=>{e.preventDefault();card.style.outline='2px solid var(--amber)';});
+    card.addEventListener('dragleave',()=>card.style.outline='');
+    card.addEventListener('drop',e=>{
+      e.preventDefault();card.style.outline='';
+      const fromId=parseInt(e.dataTransfer.getData('text/plain'));
+      const toId=k.id;
+      if(fromId===toId) return;
+      const fromIdx=kategorilerData.findIndex(d=>d.id===fromId);
+      const toIdx=kategorilerData.findIndex(d=>d.id===toId);
+      // Local array güncelle
+      const temp=kategorilerData[fromIdx];
+      kategorilerData[fromIdx]=kategorilerData[toIdx];
+      kategorilerData[toIdx]=temp;
+      // Anında yeniden çiz
+      kategoriKartCiz(document.getElementById('kategoriGrid'), kategorilerData);
+      showToast('🔀 Kategori sırası güncellendi!');
+      // Arka planda veritabanına yaz
+      sb.from('kategoriler').update({sira_no:toIdx}).eq('id',fromId);
+      sb.from('kategoriler').update({sira_no:fromIdx}).eq('id',toId);
+    });
+    card.onclick=()=>kategoriAc(k.id,k.ad);
+    card.onmouseenter=()=>card.style.boxShadow='0 4px 16px rgba(44,26,14,0.1)';
+    card.onmouseleave=()=>card.style.boxShadow='';
+    grid.appendChild(card);
+  });
+
+  // Kategori Ekle kartı — grid'in son elemanı
+  const addCard = document.createElement('div');
+  addCard.className = 'kat-kart-wrap';
+  addCard.onclick = openKategoriModal;
+  addCard.style.cssText = `background:var(--surface);border-radius:${menuAyarlar.kose}px;overflow:hidden;border:1.5px dashed var(--border);cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:${menuAyarlar.fotoH+60}px;color:var(--text2);`;
+  addCard.innerHTML = `<div style="width:36px;height:36px;border-radius:50%;border:1.5px dashed currentColor;display:flex;align-items:center;justify-content:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><span style="font-size:12px;font-weight:500;">Kategori Ekle</span>`;
+  addCard.onmouseenter = () => { addCard.style.borderColor='var(--amber)'; addCard.style.color='var(--amber)'; };
+  addCard.onmouseleave = () => { addCard.style.borderColor='var(--border)'; addCard.style.color='var(--text2)'; };
+  grid.appendChild(addCard);
+}
+
+async function kategorileriYukle(){
+  if(!currentUser) return;
+  const {data} = await sb.from('kategoriler').select('*').eq('user_id',currentUser.id).order('sira_no');
+  kategorilerData = data||[];
+  const grid = document.getElementById('kategoriGrid');
+  if(grid){ grid.style.gridTemplateColumns='repeat('+menuAyarlar.sutun+',1fr)'; grid.style.gap=menuAyarlar.gap+'px'; }
+  if(!kategorilerData.length){
+    grid.innerHTML=`<div style="text-align:center;padding:60px 20px;color:var(--warm-gray);">
+      <div style="font-size:3rem;margin-bottom:12px;">📂</div>
+      <div style="font-size:0.9rem;">Henüz kategori yok.</div>
+      <div style="font-size:0.8rem;margin-top:6px;">Sağ üstten kategori ekleyebilirsiniz.</div>
+    </div>`;
+    categories=['Tümü'];
+    return;
+  }
+  kategoriKartCiz(grid, kategorilerData);
+  categories=['Tümü',...kategorilerData.filter(k=>k.aktif).map(k=>k.ad)];
+
+  // Kategori dropdown'ını güncelle
+  const s = document.getElementById('newItemCat');
+  if(s){
+    const mevcutDeger = s.value;
+    s.innerHTML = kategorilerData.filter(k=>k.aktif).map(k=>`<option value="${k.ad}">${k.ad}</option>`).join('');
+    // Eski seçimi koru
+    if(mevcutDeger) for(let o of s.options){if(o.value===mevcutDeger){o.selected=true;break;}}
+  }
+}
+
+function openKategoriModal(){
+  document.getElementById('kategoriModalTitle').textContent='Yeni Kategori';
+  document.getElementById('kategoriSaveBtn').textContent='Ekle';
+  document.getElementById('editKategoriId').value='';
+  document.getElementById('kategoriAd').value='';
+  document.getElementById('kategoriAdEn').value='';
+  document.getElementById('kategoriFotoPreview').style.display='none';
+  document.getElementById('kategoriFotoPlaceholder').style.display='block';
+  document.getElementById('mevcutKategoriFotoUrl').value='';
+  document.getElementById('kategoriFotoInput').value='';
+  document.getElementById('kategoriAktifToggle').className='toggle on';
+  document.getElementById('kategoriAktifLabel').textContent='Aktif';
+  document.getElementById('kategoriModal').classList.add('open');
+}
+
+function closeKategoriModal(){document.getElementById('kategoriModal').classList.remove('open');}
+
+function toggleKategoriAktif(el){
+  el.classList.toggle('on');el.classList.toggle('off');
+  document.getElementById('kategoriAktifLabel').textContent=el.classList.contains('on')?'Aktif':'Pasif';
+}
+
+function kategoriFotoSec(input){
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    document.getElementById('kategoriFotoImg').src=e.target.result;
+    document.getElementById('kategoriFotoPreview').style.display='block';
+    document.getElementById('kategoriFotoPlaceholder').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function editKategori(id){
+  const {data} = await sb.from('kategoriler').select('*').eq('id',id).single();
+  if(!data) return;
+  document.getElementById('kategoriModalTitle').textContent='Kategoriyi Düzenle';
+  document.getElementById('kategoriSaveBtn').textContent='Güncelle';
+  document.getElementById('editKategoriId').value=id;
+  document.getElementById('kategoriAd').value=data.ad;
+  document.getElementById('kategoriAdEn').value=data.ad_en||'';
+  document.getElementById('mevcutKategoriFotoUrl').value=data.fotograf_url||'';
+  if(data.fotograf_url){
+    document.getElementById('kategoriFotoImg').src=data.fotograf_url;
+    document.getElementById('kategoriFotoPreview').style.display='block';
+    document.getElementById('kategoriFotoPlaceholder').style.display='none';
+  }
+  const t=document.getElementById('kategoriAktifToggle');
+  t.className='toggle '+(data.aktif?'on':'off');
+  document.getElementById('kategoriAktifLabel').textContent=data.aktif?'Aktif':'Pasif';
+  document.getElementById('kategoriModal').classList.add('open');
+}
+
+async function deleteKategori(id){
+  onayGoster('del','Kategoriyi sil','Bu kategori kalıcı olarak silinecek.',async()=>{
+    const {error}=await sb.from('kategoriler').delete().eq('id',id);
+    if(error){showToast('Silinemedi!');return;}
+    await Promise.all([menuYukle(),kategorileriYukle()]);
+    showToast('Kategori silindi');
+  });
+}
+
+async function kaydetKategori(){
+  const id=document.getElementById('editKategoriId').value;
+  const ad=document.getElementById('kategoriAd').value.trim();
+  const aktif=document.getElementById('kategoriAktifToggle').classList.contains('on');
+  if(!ad){showToast('Kategori adı zorunlu!');return;}
+  const btn=document.getElementById('kategoriSaveBtn');
+  btn.textContent='Kaydediliyor...';btn.disabled=true;
+
+  const adEn=document.getElementById('kategoriAdEn').value.trim();
+  // Mevcut sira_no'yu koru
+  const eskiKatSira = kategorilerData.find(k=>k.id===parseInt(id));
+  const payload={ad,ad_en:adEn,aktif};
+  if(id && eskiKatSira) payload.sira_no = eskiKatSira.sira_no;
+
+  // Fotoğraf yükleme
+  const fotoFile=document.getElementById('kategoriFotoInput').files[0];
+  if(fotoFile){
+    const ext=fotoFile.name.split('.').pop();
+    const path=`${currentUser.id}/kategori-${Date.now()}.${ext}`;
+    const {error:upErr}=await sb.storage.from('menu-images').upload(path,fotoFile,{upsert:true});
+    if(!upErr){
+      const {data:urlData}=sb.storage.from('menu-images').getPublicUrl(path);
+      payload.fotograf_url=urlData.publicUrl;
+    }
+  } else {
+    const mevcut=document.getElementById('mevcutKategoriFotoUrl').value;
+    if(mevcut) payload.fotograf_url=mevcut;
+  }
+
+  let error;
+  if(id){
+    const eskiKat = kategorilerData.find(k=>k.id===parseInt(id));
+    const eskiAd = eskiKat ? eskiKat.ad : null;
+    ({error}=await sb.from('kategoriler').update(payload).eq('id',parseInt(id)));
+    if(!error && eskiAd && eskiAd !== ad){
+      await sb.from('menu_items').update({kategori:ad}).eq('kategori',eskiAd).eq('user_id',currentUser.id);
+    }
+    // Bellekte de güncelle — sıra korunsun
+    if(!error && eskiKat){
+      eskiKat.ad = ad;
+      eskiKat.ad_en = adEn;
+      eskiKat.aktif = aktif;
+      if(payload.fotograf_url) eskiKat.fotograf_url = payload.fotograf_url;
+    }
+  }
+  else{
+    payload.user_id=currentUser.id;
+    payload.sira_no = kategorilerData.length;
+    ({error}=await sb.from('kategoriler').insert(payload));
+  }
+
+  btn.textContent=id?'Güncelle':'Ekle';btn.disabled=false;
+  if(error){showToast('❌ Hata: '+error.message);return;}
+  closeKategoriModal();
+  if(id){
+    // Güncelleme — bellekten çiz, sıra korunsun
+    kategoriKartCiz(document.getElementById('kategoriGrid'), kategorilerData);
+    await menuYukle();
+  } else {
+    // Yeni ekleme — DB'den yükle
+    await Promise.all([menuYukle(), kategorileriYukle()]);
+  }
+  showToast(id?'✅ Kategori güncellendi!':'✅ Kategori eklendi!');
+}
+
+let aktifCihaz = 'iphone';
+
+function cihazSec(cihaz, btn){
+  aktifCihaz = cihaz;
+  // Butonları güncelle
+  document.getElementById('btn-iphone').style.background = cihaz==='iphone'?'var(--brown)':'white';
+  document.getElementById('btn-iphone').style.color = cihaz==='iphone'?'white':'var(--warm-gray)';
+  document.getElementById('btn-iphone').style.borderColor = cihaz==='iphone'?'var(--brown)':'rgba(44,26,14,0.15)';
+  document.getElementById('btn-android').style.background = cihaz==='android'?'var(--brown)':'white';
+  document.getElementById('btn-android').style.color = cihaz==='android'?'white':'var(--warm-gray)';
+  document.getElementById('btn-android').style.borderColor = cihaz==='android'?'var(--brown)':'rgba(44,26,14,0.15)';
+  // Telefonları göster/gizle
+  document.getElementById('phone-iphone').style.display = cihaz==='iphone'?'block':'none';
+  document.getElementById('phone-android').style.display = cihaz==='android'?'block':'none';
+  yenile();
+}
+
+function yenile(){
+  if(!currentUser) return;
+  const menuUrl = window.location.href.replace('sofraQR-dashboard.html','sofraQR-menu.html')+'?uid='+currentUser.id;
+  const frameId = aktifCihaz==='android' ? 'previewFrameAndroid' : 'previewFrame';
+  const frame = document.getElementById(frameId);
+  if(frame) frame.src = menuUrl;
+}
+
+async function cevir(kaynakId, hedefId){
+  const kaynak = document.getElementById(kaynakId);
+  const hedef = document.getElementById(hedefId);
+  const metin = kaynak.value.trim();
+  if(!metin){showToast('Önce Türkçe metni gir!');return;}
+  hedef.placeholder='Çevriliyor...';
+  hedef.disabled=true;
+  try{
+    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(metin)}&langpair=tr|en`);
+    const data = await res.json();
+    hedef.value = data.responseData.translatedText;
+    showToast('Çeviri tamamlandı');
+  } catch(e){
+    showToast('Çeviri başarısız, elle gir');
+  }
+  hedef.placeholder='Tıkla veya yaz...';
+  hedef.disabled=false;
+}
+
+// EMOJİ ÖNERİ SİSTEMİ
+const emojiTablosu = {
+  'kebap':['🥩','🍢','🔥','🫕','🍖'],
+  'köfte':['🥩','🍳','🫕','🔥','🍽️'],
+  'tavuk':['🍗','🐓','🥘','🫕','🍽️'],
+  'balık':['🐟','🍤','🦞','🐠','🫕'],
+  'çorba':['🍲','🥣','🫕','♨️','🍜'],
+  'soup':['🍲','🥣','🫕','♨️','🍜'],
+  'salata':['🥗','🥬','🫛','🌿','🥙'],
+  'pizza':['🍕','🧀','🫓','🍽️','🔥'],
+  'makarna':['🍝','🍜','🧆','🫕','🍽️'],
+  'burger':['🍔','🥪','🍟','🧆','🥩'],
+  'tatlı':['🍰','🧁','🍮','🍯','🍩'],
+  'dessert':['🍰','🧁','🍮','🍩','🍪'],
+  'dondurma':['🍦','🍨','🧁','🍭','❄️'],
+  'kahve':['☕','🫖','🍵','☕','🧋'],
+  'çay':['🫖','🍵','☕','🧋','🌿'],
+  'içecek':['🥤','🧋','🍹','🫗','💧'],
+  'meyve':['🍎','🍊','🍋','🍓','🫐'],
+  'kahvaltı':['🍳','🥚','🧇','🥞','☕'],
+  'breakfast':['🍳','🥚','🧇','🥞','☕'],
+  'başlangıç':['🥗','🫓','🧆','🍢','🥙'],
+  'ara':['🥗','🫓','🧆','🍢','🥙'],
+  'ana':['🍽️','🥘','🫕','🍖','🔥'],
+  'et':['🥩','🍖','🔥','🫕','🍗'],
+  'deniz':['🐟','🦞','🦐','🐠','🫕'],
+  'sebze':['🥦','🥕','🫑','🥬','🌽'],
+  'vejetaryen':['🥗','🫛','🥦','🌿','🫑'],
+  'ekmek':['🍞','🫓','🥖','🥐','🧆'],
+  'börek':['🥐','🫓','🍞','🧆','🫕'],
+  'pide':['🫓','🍕','🥖','🧆','🍞'],
+  'lahmacun':['🫓','🍕','🥩','🌶️','🍽️'],
+  'mantı':['🥟','🫕','🍝','🥣','🍽️'],
+  'pilav':['🍚','🍛','🫕','🌾','🍽️'],
+  'döner':['🥙','🫔','🥩','🌯','🔥'],
+  'şiş':['🍢','🥩','🔥','🫕','🍖'],
+};
+
+function emojiOnerAd(metin, hedefId='emojiOneriler'){
+  const hedef = document.getElementById(hedefId);
+  if(!hedef) return;
+  if(!metin || metin.length < 2){hedef.style.display='none';return;}
+  const kucuk = metin.toLowerCase();
+  let bulunan = null;
+  for(const [anahtar, emojiler] of Object.entries(emojiTablosu)){
+    if(kucuk.includes(anahtar)){bulunan=emojiler;break;}
+  }
+  if(!bulunan) bulunan = ['🍽️','🥘','🫕','🔥','⭐'];
+  hedef.style.display='flex';
+  hedef.innerHTML = '<span style="font-size:0.72rem;color:var(--warm-gray);margin-right:4px;">Öneri:</span>' +
+    bulunan.map(e=>`<span onclick="emojiSec('${e}','${hedefId}')" style="font-size:1.4rem;cursor:pointer;padding:2px 4px;border-radius:6px;transition:transform 0.1s;" onmouseover="this.style.transform='scale(1.3)'" onmouseout="this.style.transform='scale(1)'">${e}</span>`).join('');
+}
+
+function emojiSec(emoji, hedefId='emojiOneriler'){
+  // Hangi input alanına eklenecek
+  const inputMap = {
+    'emojiOneriler': 'newItemName',
+    'emojiOnerilerDesc': 'newItemDesc',
+    'emojiOnerilerNameEn': 'newItemNameEn',
+    'emojiOnerilerDescEn': 'newItemDescEn',
+    'kategoriEmojiOneriler': 'kategoriAd',
+    'kategoriEmojiOnerilerEn': 'kategoriAdEn',
+  };
+  const inputId = inputMap[hedefId];
+  if(inputId){
+    const input = document.getElementById(inputId);
+    if(input){
+      const mevcut = input.value.trim();
+      const emojiRegex = /\s[\u{1F300}-\u{1FFFF}]$/u;
+      input.value = emojiRegex.test(mevcut)
+        ? mevcut.replace(emojiRegex, '') + ' ' + emoji
+        : mevcut + ' ' + emoji;
+    }
+  }
+  // Ürün adından seçildiyse hidden emoji alanını da güncelle
+  if(hedefId==='emojiOneriler'){
+    document.getElementById('newItemEmoji').value = emoji;
+  }
+  document.getElementById(hedefId).style.display='none';
+}
+
+async function cevir(kaynakId, hedefId){
+  const kaynak = document.getElementById(kaynakId);
+  const hedef = document.getElementById(hedefId);
+  const metin = kaynak.value.trim();
+  if(!metin){showToast('Önce Türkçe metni gir!');return;}
+  hedef.placeholder='Çevriliyor...';
+  hedef.disabled=true;
+  try{
+    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(metin)}&langpair=tr|en`);
+    const data = await res.json();
+    hedef.value = data.responseData.translatedText;
+    showToast('Çeviri tamamlandı');
+  } catch(e){
+    showToast('Çeviri başarısız, elle gir');
+  }
+  hedef.placeholder='Tıkla veya yaz...';
+  hedef.disabled=false;
+}
+
+// TOOLBAR TOGGLE
+function menuToolbarToggle(){
+  const panel = document.getElementById('menuToolbarPanel');
+  const arrow = document.getElementById('menuToolbarArrow');
+  const btn = document.getElementById('menuToolbarBtn');
+  const open = panel.style.display === 'flex';
+  panel.style.display = open ? 'none' : 'flex';
+  arrow.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+  btn.style.color = open ? 'var(--text2)' : 'var(--amber)';
+  btn.style.borderColor = open ? 'var(--border)' : 'var(--amber)';
+}
+
+function urunToolbarToggle(){
+  const panel = document.getElementById('urunToolbarPanel');
+  const arrow = document.getElementById('urunToolbarArrow');
+  const btn = document.getElementById('urunToolbarBtn');
+  const open = panel.style.display === 'flex';
+  panel.style.display = open ? 'none' : 'flex';
+  arrow.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+  btn.style.color = open ? 'var(--text2)' : 'var(--amber)';
+  btn.style.borderColor = open ? 'var(--border)' : 'var(--amber)';
+}
+
+// ÜRÜN ÖZELLEŞTIRME
+let urunAyarlar = {
+  fotoH: 120, sutun: 5, kose: 12,
+  adFont: 12, fiyatFont: 13, fontKomb: 'Oswald'
+};
+
+function urunAyarUygula(){
+  const fotoH = document.getElementById('u-foto-h');
+  const sutun = document.getElementById('u-sutun');
+  const kose  = document.getElementById('u-kose');
+  const adF   = document.getElementById('u-ad-font');
+  const fiyatF= document.getElementById('u-fiyat-font');
+  const fontK = document.getElementById('u-font-komb');
+
+  if(fotoH){urunAyarlar.fotoH=parseInt(fotoH.value);document.getElementById('lbl-u-foto-h').textContent=fotoH.value+'px';}
+  if(sutun) urunAyarlar.sutun=parseInt(sutun.value);
+  if(kose){urunAyarlar.kose=parseInt(kose.value);document.getElementById('lbl-u-kose').textContent=kose.value+'px';}
+  if(adF){urunAyarlar.adFont=parseInt(adF.value);document.getElementById('lbl-u-ad-font').textContent=adF.value+'px';}
+  if(fiyatF){urunAyarlar.fiyatFont=parseInt(fiyatF.value);document.getElementById('lbl-u-fiyat-font').textContent=fiyatF.value+'px';}
+  if(fontK) urunAyarlar.fontKomb=fontK.value;
+
+  const urunGrid = document.getElementById('menuGrid');
+  if(urunGrid){
+    urunGrid.style.gridTemplateColumns='repeat('+urunAyarlar.sutun+',1fr)';
+    urunGrid.style.gap=menuAyarlar.gap+'px';
+  }
+  document.querySelectorAll('.menu-item-img').forEach(el=>el.style.height=urunAyarlar.fotoH+'px');
+  document.querySelectorAll('.menu-item-card').forEach(el=>el.style.borderRadius=urunAyarlar.kose+'px');
+  document.querySelectorAll('.menu-item-name').forEach(el=>{
+    el.style.fontSize=urunAyarlar.adFont+'px';
+    if(urunAyarlar.fontKomb) el.style.fontFamily=`'${urunAyarlar.fontKomb}',sans-serif`;
+  });
+  document.querySelectorAll('.menu-item-price').forEach(el=>el.style.fontSize=urunAyarlar.fiyatFont+'px');
+  localStorage.setItem('sofraQR-urun-ayarlar', JSON.stringify(urunAyarlar));
+}
+
+function urunAyarSifirla(){
+  urunAyarlar={fotoH:120,sutun:5,kose:12,adFont:12,fiyatFont:13,fontKomb:'Oswald'};
+  const ids={'u-foto-h':120,'u-kose':12,'u-ad-font':12,'u-fiyat-font':13};
+  Object.entries(ids).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val;});
+  const eSutun=document.getElementById('u-sutun');if(eSutun)eSutun.value=5;
+  const eFont=document.getElementById('u-font-komb');if(eFont)eFont.value='Oswald';
+  urunAyarUygula();
+}
+
+// MENÜ ÖZELLEŞTIRME
+let menuAyarlar = {
+  fotoH: 137, sutun: 5, kose: 24, gap: 7,
+  katFont: 15, fontKomb: 'Oswald', fontWeight: '500'
+};
+
+function togAyar(key){
+  menuAyarlar[key] = !menuAyarlar[key];
+  const el = document.getElementById('tog-'+key);
+  if(!el) return;
+  const dot = el.querySelector('div');
+  if(menuAyarlar[key]){
+    el.style.background = '#C8603C';
+    dot.style.right = '3px'; dot.style.left = 'auto';
+  } else {
+    el.style.background = 'var(--border)';
+    dot.style.left = '3px'; dot.style.right = 'auto';
+  }
+  menuAyarUygula();
+}
+
+function menuAyarUygula(){
+  const fotoH = document.getElementById('s-foto-h');
+  const sutun = document.getElementById('s-sutun');
+  const kose  = document.getElementById('s-kose');
+  const gap   = document.getElementById('s-gap');
+  const katF  = document.getElementById('s-kat-font');
+
+
+  if(fotoH){
+    menuAyarlar.fotoH=parseInt(fotoH.value);
+    document.getElementById('lbl-foto-h').textContent=fotoH.value+'px';
+  }
+  if(sutun) menuAyarlar.sutun=parseInt(sutun.value);
+  if(kose){
+    menuAyarlar.kose=parseInt(kose.value);
+    document.getElementById('lbl-kose').textContent=kose.value+'px';
+  }
+  if(gap){
+    menuAyarlar.gap=parseInt(gap.value);
+    document.getElementById('lbl-gap').textContent=gap.value+'px';
+  }
+  if(katF){
+    menuAyarlar.katFont=parseInt(katF.value);
+    document.getElementById('lbl-kat-font').textContent=katF.value+'px';
+  }
+
+  const fontKomb = document.getElementById('s-font-komb');
+  const fontWeight = document.getElementById('s-font-weight');
+  if(fontKomb) menuAyarlar.fontKomb = fontKomb.value;
+  if(fontWeight) menuAyarlar.fontWeight = fontWeight.value;
+
+  // Font yükle
+  if(menuAyarlar.fontKomb){
+    let fl=document.getElementById('menuFontLink');
+    if(!fl){fl=document.createElement('link');fl.id='menuFontLink';fl.rel='stylesheet';document.head.appendChild(fl);}
+    fl.href=`https://fonts.googleapis.com/css2?family=${menuAyarlar.fontKomb.replace(/ /g,'+')}:wght@300;400;500;600;700&display=swap`;
+  }
+
+  // Grid'i yeniden çiz
+  const katGrid = document.getElementById('kategoriGrid');
+  const urunGrid = document.getElementById('menuGrid');
+
+  // Sütun sayısını güncelle
+  const cols = menuAyarlar.layout==='liste' ? '1fr' :
+               menuAyarlar.layout==='kompakt' ? 'repeat('+menuAyarlar.sutun+',1fr)' :
+               'repeat('+menuAyarlar.sutun+',1fr)';
+  if(katGrid) katGrid.style.gridTemplateColumns = cols;
+  if(urunGrid) urunGrid.style.gridTemplateColumns = cols;
+  if(katGrid) katGrid.style.gap = menuAyarlar.gap+'px';
+  if(urunGrid) urunGrid.style.gap = menuAyarlar.gap+'px';
+
+  // Kartları güncelle — fotoğraf yüksekliği, köşe, fontlar
+  document.querySelectorAll('.kat-foto-alan').forEach(el=>{
+    el.style.height = menuAyarlar.fotoH+'px';
+  });
+  document.querySelectorAll('.kat-kart-wrap').forEach(el=>{
+    el.style.borderRadius = menuAyarlar.kose+'px';
+  });
+  document.querySelectorAll('.kat-kart-ad').forEach(el=>{
+    el.style.fontSize = menuAyarlar.katFont+'px';
+    if(menuAyarlar.fontKomb) el.style.fontFamily = `'${menuAyarlar.fontKomb}', sans-serif`;
+    if(menuAyarlar.fontWeight) el.style.fontWeight = menuAyarlar.fontWeight;
+  });
+
+
+  // LocalStorage'a kaydet
+  localStorage.setItem('sofraQR-menu-ayarlar', JSON.stringify(menuAyarlar));
+}
+
+function menuAyarSifirla(){
+  menuAyarlar = {fotoH:137,sutun:5,kose:24,gap:7,katFont:15,fontKomb:'Oswald',fontWeight:'500'};
+  // Slider'ları sıfırla
+  const ids = {'s-foto-h':137,'s-kose':24,'s-gap':7,'s-kat-font':15};
+  Object.entries(ids).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val;});
+  const sel = {'s-sutun':5,'s-font-komb':'Oswald','s-font-weight':'500'};
+  Object.entries(sel).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val;});
+
+  menuAyarUygula();
+}
+
+function menuAyarYukle(){
+  const saved = localStorage.getItem('sofraQR-menu-ayarlar');
+  if(!saved) return;
+  try{
+    menuAyarlar = {...menuAyarlar, ...JSON.parse(saved)};
+    // Slider değerlerini ayarla
+    const ids = {'s-foto-h':'fotoH','s-kose':'kose','s-gap':'gap','s-kat-font':'katFont'};
+    Object.entries(ids).forEach(([id,key])=>{const el=document.getElementById(id);if(el)el.value=menuAyarlar[key];});
+    document.getElementById('s-sutun')?.value != null && (document.getElementById('s-sutun').value=5);
+    document.getElementById('s-siralama')?.value != null && (document.getElementById('s-siralama').value=menuAyarlar.siralama);
+    // Toggle durumları
+    ['badge','aciklama','fiyat','emoji'].forEach(k=>{
+      const el=document.getElementById('tog-'+k); if(!el) return;
+      const dot=el.querySelector('div');
+      if(menuAyarlar[k]){el.style.background='#C8603C';dot.style.right='3px';dot.style.left='auto';}
+      else{el.style.background='var(--border)';dot.style.left='3px';dot.style.right='auto';}
+    });
+    menuAyarUygula();
+  } catch(e){}
+}
+let seciliFontBas = 'Oswald';
+let seciliFontMetin = 'Montserrat';
+
+function fontKombSec(bas, metin, el){
+  seciliFontBas = bas; seciliFontMetin = metin;
+  document.querySelectorAll('#fontKombList > div').forEach(d=>{
+    d.style.background='transparent'; d.style.border='1px solid var(--border)';
+    const r=d.querySelector('.fk-radio');
+    if(r){r.style.background='transparent';r.innerHTML='';r.style.border='1.5px solid var(--border)';}
+  });
+  el.style.background='rgba(200,133,42,0.08)'; el.style.border='1.5px solid var(--amber)';
+  const r=el.querySelector('.fk-radio');
+  if(r){r.style.background='var(--amber)';r.innerHTML='<div style="width:6px;height:6px;border-radius:50%;background:white;"></div>';r.style.border='none';}
+  const urlBas=bas.replace(/ /g,'+'); const urlMetin=metin.replace(/ /g,'+');
+  let link=document.getElementById('fontKombLink');
+  if(!link){link=document.createElement('link');link.id='fontKombLink';link.rel='stylesheet';document.head.appendChild(link);}
+  link.href=`https://fonts.googleapis.com/css2?family=${urlBas}:wght@400;500;600;700&family=${urlMetin}:wght@300;400;500;600&display=swap`;
+  fontOnizleYeni();
+}
+
+function fontOnizleYeni(){
+  const sKat=document.getElementById('size-kat')?.value||18;
+  const sUrun=document.getElementById('size-urun')?.value||16;
+  const sFiyat=document.getElementById('size-fiyat')?.value||16;
+  const oKat=document.getElementById('onizle-kat');
+  const oUrun=document.getElementById('onizle-urun-ad');
+  const oAcik=document.getElementById('onizle-aciklama');
+  const oFiyat=document.getElementById('onizle-fiyat-txt');
+  if(oKat){oKat.style.fontFamily=`'${seciliFontBas}',sans-serif`;oKat.style.fontSize=sKat+'px';}
+  if(oUrun){oUrun.style.fontFamily=`'${seciliFontBas}',sans-serif`;oUrun.style.fontSize=sUrun+'px';}
+  if(oAcik){oAcik.style.fontFamily=`'${seciliFontMetin}',sans-serif`;}
+  if(oFiyat){oFiyat.style.fontFamily=`'${seciliFontBas}',sans-serif`;oFiyat.style.fontSize=sFiyat+'px';}
+}
+
+async function tasarimKaydet(){
+  if(!currentUser) return;
+  const sKat=document.getElementById('size-kat')?.value||18;
+  const sUrun=document.getElementById('size-urun')?.value||16;
+  const sFiyat=document.getElementById('size-fiyat')?.value||16;
+  const {data:mevcut}=await sb.from('restoran_bilgileri').select('id').eq('user_id',currentUser.id).single();
+  const payload={font_kategori:seciliFontBas,font_urun:seciliFontBas,font_fiyat:seciliFontBas,font_aciklama:seciliFontMetin,font_size_kat:parseInt(sKat),font_size_urun:parseInt(sUrun),font_size_fiyat:parseInt(sFiyat)};
+  let error;
+  if(mevcut){({error}=await sb.from('restoran_bilgileri').update(payload).eq('user_id',currentUser.id));}
+  else{({error}=await sb.from('restoran_bilgileri').insert({...payload,user_id:currentUser.id}));}
+  if(error){showToast('Kaydedilemedi: '+error.message);return;}
+  showToast('Font ayarları kaydedildi');
+}
+
+async function restoranBilgileriYukle(){
+  if(!currentUser) return;
+  const {data}=await sb.from('restoran_bilgileri').select('*').eq('user_id',currentUser.id).single();
+  if(!data) return;
+  document.getElementById('rb-ad').value=data.ad||'';
+  document.getElementById('rb-telefon').value=data.telefon||'';
+  document.getElementById('rb-adres').value=data.adres||'';
+  document.getElementById('rb-harita').value=data.harita_url||'';
+  document.getElementById('rb-saat').value=data.calisma_saatleri||'';
+  document.getElementById('rb-instagram').value=data.instagram||'';
+  document.getElementById('rb-website').value=data.website||'';
+  restoranProfilGuncelle();
+}
+
+async function restoranBilgileriKaydet(){
+  if(!currentUser) return;
+  const payload = {
+    user_id: currentUser.id,
+    ad: document.getElementById('rb-ad').value.trim(),
+    telefon: document.getElementById('rb-telefon').value.trim(),
+    adres: document.getElementById('rb-adres').value.trim(),
+    harita_url: document.getElementById('rb-harita').value.trim(),
+    calisma_saatleri: document.getElementById('rb-saat').value.trim(),
+    instagram: document.getElementById('rb-instagram').value.trim(),
+    website: document.getElementById('rb-website').value.trim(),
+  };
+  const {data:mevcut} = await sb.from('restoran_bilgileri').select('id').eq('user_id',currentUser.id).single();
+  let error;
+  if(mevcut){
+    ({error} = await sb.from('restoran_bilgileri').update(payload).eq('user_id',currentUser.id));
+  } else {
+    ({error} = await sb.from('restoran_bilgileri').insert(payload));
+  }
+  if(error){showToast('Kaydedilemedi: '+error.message);return;}
+  showToast('✅ Restoran bilgileri kaydedildi!');
+}
+
+function fotografSec(input){
+  const file = input.files[0]; if(!file) return;
+  if(file.size > 2*1024*1024){showToast('⚠️ Fotoğraf 2MB\'dan küçük olmalı!');return;}
+  const reader = new FileReader();
+  reader.onload = e=>{
+    document.getElementById('fotografImg').src = e.target.result;
+    document.getElementById('fotografPreview').style.display='block';
+    document.getElementById('fotografPlaceholder').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function fotografYukle(file, itemId){
+  const ext = file.name.split('.').pop();
+  const path = `${currentUser.id}/${itemId}.${ext}`;
+  const {error} = await sb.storage.from('menu-images').upload(path, file, {upsert:true});
+  if(error) return null;
+  const {data} = sb.storage.from('menu-images').getPublicUrl(path);
+  return data.publicUrl;
+}
+
+function fotografSifirla(){
+  document.getElementById('fotografInput').value='';
+  document.getElementById('fotografPreview').style.display='none';
+  document.getElementById('fotografPlaceholder').style.display='block';
+  document.getElementById('mevcutFotografUrl').value='';
+}
+
+function setAktifToggle(aktif){
+  const t=document.getElementById('aktifToggle');
+  t.className='toggle '+(aktif?'on':'off');
+  document.getElementById('aktifLabel').textContent=aktif?'Aktif — Müşteriler görebilir':'Pasif — Müşteriler göremez';
+}
+
+function openModal(){
+  document.getElementById('modalTitle').textContent='Yeni Ürün Ekle';
+  document.getElementById('modalSaveBtn').textContent='Ekle';
+  document.getElementById('editItemId').value='';
+  document.getElementById('newItemName').value='';
+  document.getElementById('newItemDesc').value='';
+  document.getElementById('newItemPrice').value='';
+  document.getElementById('newItemEmoji').value='';
+  document.getElementById('newItemNameEn').value='';
+  document.getElementById('newItemDescEn').value='';
+  fotografSifirla();
+  setAktifToggle(true);
+  // Aktif kategoriye göre kategori seç
+  if(aktifKategoriAdiVar){
+    const s=document.getElementById('newItemCat');
+    let found=false;
+    for(let o of s.options){if(o.value===aktifKategoriAdiVar||o.text===aktifKategoriAdiVar){o.selected=true;found=true;break;}}
+    if(!found){
+      const opt=document.createElement('option');
+      opt.value=aktifKategoriAdiVar;opt.text=aktifKategoriAdiVar;opt.selected=true;
+      s.appendChild(opt);
+    }
+  }
+  document.getElementById('modal').classList.add('open');
+}
+
+function editItem(id){
+  const item=menuItems.find(m=>m.id===id); if(!item) return;
+  document.getElementById('modalTitle').textContent='Yemeği Düzenle';
+  document.getElementById('modalSaveBtn').textContent='Güncelle';
+  document.getElementById('editItemId').value=id;
+  document.getElementById('newItemName').value=item.name;
+  document.getElementById('newItemDesc').value=item.desc||'';
+  document.getElementById('newItemPrice').value=item.price;
+  document.getElementById('newItemEmoji').value=item.emoji||'';
+  document.getElementById('newItemNameEn').value=item.name_en||'';
+  document.getElementById('newItemDescEn').value=item.desc_en||'';
+  const s=document.getElementById('newItemCat');
+  for(let o of s.options){o.selected=(o.value===item.cat||o.text===item.cat);}
+  setAktifToggle(item.active);
+  // Fotoğraf
+  fotografSifirla();
+  if(item.fotograf_url){
+    document.getElementById('mevcutFotografUrl').value=item.fotograf_url;
+    document.getElementById('fotografImg').src=item.fotograf_url;
+    document.getElementById('fotografPreview').style.display='block';
+    document.getElementById('fotografPlaceholder').style.display='none';
+  }
+  document.getElementById('modal').classList.add('open');
+}
+
+async function deleteItem(id){
+  onayGoster('del','Ürünü sil','Bu ürün kalıcı olarak silinecek.',async()=>{
+    const {error}=await sb.from('menu_items').delete().eq('id',id).eq('user_id',currentUser.id);
+    if(error){showToast('❌ Silinemedi: '+error.message);return;}
+    await menuYukle();
+    showToast('🗑️ Yemek silindi!');
+  });
+}
+
+async function duplicateKategori(id){
+  const kat = kategorilerData.find(k=>k.id===id);
+  if(!kat || !currentUser) return;
+  const yeniAd = kat.ad + ' (Kopya)';
+  const {error} = await sb.from('kategoriler').insert({
+    ad: yeniAd,
+    fotograf_url: kat.fotograf_url,
+    aktif: false,
+    user_id: currentUser.id,
+    sira_no: kategorilerData.length
+  });
+  if(error){showToast('Kopyalanamadı!');return;}
+  showToast('Kategori kopyalandı');
+  await kategorileriYukle();
+}
+
+async function duplicateItem(id){
+  const item=menuItems.find(m=>m.id===id); if(!item) return;
+  document.getElementById('dupItemId').value=id;
+  document.getElementById('dupItemName').value='Copy of '+item.name;
+  selectDupStatus('active');
+  document.getElementById('dupModal').classList.add('open');
+}
+
+function selectDupStatus(status){
+  document.getElementById('dupStatus').value=status;
+  document.getElementById('dupActive').style.border=status==='active'?'2px solid var(--amber)':'1.5px solid rgba(44,26,14,0.12)';
+  document.getElementById('dupInactive').style.border=status==='inactive'?'2px solid var(--amber)':'1.5px solid rgba(44,26,14,0.12)';
+}
+
+function closeDupModal(){document.getElementById('dupModal').classList.remove('open');}
+
+async function confirmDuplicate(){
+  const id=parseInt(document.getElementById('dupItemId').value);
+  const name=document.getElementById('dupItemName').value.trim();
+  const aktif=document.getElementById('dupStatus').value==='active';
+  const item=menuItems.find(m=>m.id===id); if(!item||!currentUser) return;
+  if(!name){showToast('⚠️ Başlık zorunlu!');return;}
+  const {error}=await sb.from('menu_items').insert({
+    user_id:currentUser.id, ad:name,
+    aciklama:item.desc, fiyat:item.price,
+    kategori:item.cat, emoji:item.emoji, aktif
+  });
+  if(error){showToast('❌ Kopyalanamadı!');return;}
+  closeDupModal();
+  await menuYukle();
+  showToast('📋 '+name+' kopyalandı!');
+}
+
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+
+let onayCallback = null;
+
+function onayGoster(ikon, baslik, aciklama, callback){
+  onayCallback = callback;
+  const onayEl = document.getElementById('onayIkon');
+  if(ikon === 'del'){
+    onayEl.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B3A3A" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg>';
+  } else { onayEl.textContent = ikon; }
+  document.getElementById('onayBaslik').textContent = baslik;
+  document.getElementById('onayAciklama').textContent = aciklama;
+  document.getElementById('onayModal').classList.add('open');
+}
+
+function onayOnayla(){
+  document.getElementById('onayModal').classList.remove('open');
+  if(onayCallback) onayCallback();
+  onayCallback = null;
+}
+
+function onayIptal(){
+  document.getElementById('onayModal').classList.remove('open');
+  onayCallback = null;
+}
+
+async function kaydetItem(){
+  const id=document.getElementById('editItemId').value;
+  const name=document.getElementById('newItemName').value.trim();
+  const desc=document.getElementById('newItemDesc').value.trim();
+  const price=document.getElementById('newItemPrice').value;
+  const cat=document.getElementById('newItemCat').value;
+  const emoji=document.getElementById('newItemEmoji').value||'🍽️';
+  const nameEn=document.getElementById('newItemNameEn').value.trim();
+  const descEn=document.getElementById('newItemDescEn').value.trim();
+  if(!name||!price){showToast('⚠️ Ad ve fiyat zorunlu!');return;}
+  if(!currentUser){showToast('❌ Giriş yapmalısınız!');return;}
+
+  modalYukleniyor = true;
+  const btn=document.getElementById('modalSaveBtn');
+  const cancelBtn=document.querySelector('#modal .modal-cancel');
+  btn.textContent='Kaydediliyor...';btn.disabled=true;
+  if(cancelBtn) cancelBtn.disabled=true;
+
+  const payload={ad:name,aciklama:desc,ad_en:nameEn,aciklama_en:descEn,fiyat:parseFloat(price),kategori:cat,emoji,aktif:document.getElementById('aktifToggle').classList.contains('on')};
+
+  // Fotoğraf yükleme
+  const fotografFile = document.getElementById('fotografInput').files[0];
+  if(fotografFile){
+    btn.textContent='📷 Fotoğraf yükleniyor...';
+    const tempId = id || Date.now();
+    const url = await fotografYukle(fotografFile, tempId);
+    if(url) payload.fotograf_url = url;
+  } else {
+    const mevcutUrl = document.getElementById('mevcutFotografUrl').value;
+    if(mevcutUrl) payload.fotograf_url = mevcutUrl;
+  }
+
+  btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg> Kaydediliyor...';
+  let error;
+  if(id){({error}=await sb.from('menu_items').update(payload).eq('id',parseInt(id)));}
+  else{payload.user_id=currentUser.id;({error}=await sb.from('menu_items').insert(payload));}
+
+  // Yükleme bitti
+  modalYukleniyor = false;
+  btn.textContent=id?'Güncelle':'Ekle';btn.disabled=false;
+  if(cancelBtn) cancelBtn.disabled=false;
+
+  if(error){showToast('❌ Hata: '+error.message);return;}
+  closeModal();await menuYukle();
+  showToast(id?'✅ '+name+' güncellendi!':'✅ '+name+' eklendi!');
+}
+
+// SETTINGS
+function selectSwatch(el){
+  document.querySelectorAll('.swatch').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');showToast('🎨 Renk seçildi!');
+}
+function toggleAktif(el){
+  el.classList.toggle('on'); el.classList.toggle('off');
+  const aktif = el.classList.contains('on');
+  document.getElementById('aktifLabel').textContent = aktif ? 'Aktif — Müşteriler görebilir' : 'Pasif — Müşteriler göremez';
+}
+function toggleLang(el){
+  el.classList.toggle('on');el.classList.toggle('off');
+  showToast(el.classList.contains('on')?'✅ Dil aktif edildi':'Dil devre dışı bırakıldı');
+}
+
+// TOAST
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// INIT
+async function init(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){window.location.href='sofraQR-auth.html';return;}
+  currentUser=session.user;
+
+  // Tema yükle
+  const kayitliTema=localStorage.getItem('sofraQR-tema');
+  if(kayitliTema==='koyu') temaDegistir('koyu');
+  else temaDegistir('acik');
+
+  // Sidebar kullanıcı bilgisi
+  const email=currentUser.email;
+  const restoran=currentUser.user_metadata?.restoran_adi||email.split('@')[0];
+  document.querySelector('.sidebar-restaurant-name').textContent=restoran;
+  document.querySelector('.sidebar-restaurant-sub').textContent=email;
+  document.querySelector('.user-name').textContent=restoran;
+
+  await Promise.all([menuYukle(), kategorileriYukle()]);
+  buildQR();
+  buildTables();
+  buildHeatmap([]);
+}
+
+init();
+
+// TOOLBAR TOOLTIP
+(function(){
+  const tip = document.createElement('div');
+  tip.id = 'tb-tooltip';
+  document.body.appendChild(tip);
+  document.addEventListener('mouseover', function(e){
+    const el = e.target.closest('[data-tip]');
+    if(!el){tip.classList.remove('show');return;}
+    tip.textContent = el.dataset.tip;
+    tip.classList.add('show');
+  });
+  document.addEventListener('mousemove', function(e){
+    tip.style.left = (e.clientX + 12) + 'px';
+    tip.style.top = (e.clientY - 28) + 'px';
+  });
+  document.addEventListener('mouseout', function(e){
+    if(!e.target.closest('[data-tip]')) tip.classList.remove('show');
+  });
+})();
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this && !modalYukleniyor){}});
+document.getElementById('dupModal').addEventListener('click',function(e){});
+document.getElementById('kategoriModal').addEventListener('click',function(e){});
+</script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SofraQR – Giriş / Kayıt</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#FAF6F0;--brown:#2C1A0E;--amber:#C8852A;--amber-light:#E8A84A;
+  --warm-gray:#9A8F85;--danger:#E53935;--success:#4CAF50;
+}
+body{
+  font-family:'DM Sans',sans-serif;background:var(--cream);
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.bg{
+  position:fixed;inset:0;z-index:0;
+  background:radial-gradient(ellipse 60% 70% at 80% 50%,rgba(200,133,42,0.1) 0%,transparent 70%),
+  radial-gradient(ellipse 40% 50% at 20% 80%,rgba(107,126,94,0.07) 0%,transparent 60%);
+}
+.card{
+  position:relative;z-index:1;
+  background:white;border-radius:24px;padding:44px 40px;width:420px;max-width:90vw;
+  box-shadow:0 20px 60px rgba(44,26,14,0.12);
+  border:1px solid rgba(44,26,14,0.07);
+}
+.logo{
+  font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;
+  color:var(--brown);text-align:center;margin-bottom:6px;
+}
+.logo span{color:var(--amber);}
+.subtitle{text-align:center;font-size:0.85rem;color:var(--warm-gray);margin-bottom:32px;font-weight:300;}
+
+.tabs{display:flex;background:rgba(44,26,14,0.05);border-radius:12px;padding:4px;margin-bottom:28px;}
+.tab{
+  flex:1;padding:10px;text-align:center;border-radius:9px;cursor:pointer;
+  font-size:0.88rem;font-weight:500;color:var(--warm-gray);transition:all 0.2s;border:none;background:transparent;
+  font-family:'DM Sans',sans-serif;
+}
+.tab.active{background:white;color:var(--brown);box-shadow:0 2px 8px rgba(44,26,14,0.1);}
+
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-size:0.78rem;font-weight:600;color:var(--warm-gray);margin-bottom:6px;letter-spacing:0.3px;}
+.form-input{
+  width:100%;padding:12px 16px;border-radius:12px;
+  border:1.5px solid rgba(44,26,14,0.12);
+  font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--brown);
+  background:white;outline:none;transition:border-color 0.15s;
+}
+.form-input:focus{border-color:var(--amber);}
+.form-input::placeholder{color:rgba(154,143,133,0.6);}
+
+.submit-btn{
+  width:100%;padding:14px;background:var(--amber);color:white;border:none;
+  border-radius:12px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;
+  cursor:pointer;transition:all 0.15s;margin-top:4px;
+}
+.submit-btn:hover{background:var(--amber-light);transform:translateY(-1px);}
+.submit-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(44,26,14,0.08);}
+.divider span{font-size:0.75rem;color:var(--warm-gray);}
+
+.alert{
+  padding:12px 16px;border-radius:10px;font-size:0.83rem;margin-bottom:16px;display:none;
+}
+.alert.error{background:rgba(229,57,53,0.08);color:var(--danger);border:1px solid rgba(229,57,53,0.2);}
+.alert.success{background:rgba(76,175,80,0.08);color:#2E7D32;border:1px solid rgba(76,175,80,0.2);}
+.alert.show{display:block;}
+
+.loading{display:inline-block;width:16px;height:16px;border:2px solid white;border-top-color:transparent;border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Dashboard preview after login */
+.logged-in{display:none;text-align:center;}
+.logged-in.show{display:block;}
+.welcome-icon{font-size:3rem;margin-bottom:12px;}
+.welcome-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:8px;}
+.welcome-email{font-size:0.85rem;color:var(--warm-gray);margin-bottom:24px;}
+.dashboard-btn{
+  display:inline-block;padding:14px 32px;background:var(--brown);color:white;
+  border-radius:12px;font-weight:600;font-size:0.9rem;text-decoration:none;
+  cursor:pointer;border:none;font-family:'DM Sans',sans-serif;
+  transition:all 0.15s;width:100%;
+}
+.dashboard-btn:hover{background:var(--amber);}
+.logout-btn{
+  background:transparent;border:1.5px solid rgba(44,26,14,0.12);color:var(--warm-gray);
+  width:100%;padding:11px;border-radius:12px;font-family:'DM Sans',sans-serif;
+  font-size:0.85rem;cursor:pointer;margin-top:10px;transition:all 0.15s;
+}
+.logout-btn:hover{border-color:var(--danger);color:var(--danger);}
+
+.auth-forms{}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+
+<div class="card">
+  <div class="logo">Sofra<span>QR</span></div>
+  <div class="subtitle">Restoranınız için dijital menü platformu</div>
+
+  <!-- LOGGED IN STATE -->
+  <div class="logged-in" id="loggedIn">
+    <div class="welcome-icon">🎉</div>
+    <div class="welcome-title">Hoş geldiniz!</div>
+    <div class="welcome-email" id="userEmail"></div>
+    <button class="dashboard-btn" onclick="gotoDashboard()">📊 Dashboard'a Git</button>
+    <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
+  </div>
+
+  <!-- AUTH FORMS -->
+  <div class="auth-forms" id="authForms">
+    <div class="tabs">
+      <button class="tab active" id="tabGiris" onclick="switchTab('giris')">Giriş Yap</button>
+      <button class="tab" id="tabKayit" onclick="switchTab('kayit')">Kayıt Ol</button>
+    </div>
+
+    <div id="alertBox" class="alert"></div>
+
+    <!-- GİRİŞ FORMU -->
+    <div id="formGiris">
+      <div class="form-group">
+        <label class="form-label">E-POSTA</label>
+        <input class="form-input" id="girisEmail" type="email" placeholder="restoran@email.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ŞİFRE</label>
+        <input class="form-input" id="girisPassword" type="password" placeholder="••••••••"/>
+      </div>
+      <button class="submit-btn" id="girisBtn" onclick="girisYap()">Giriş Yap</button>
+    </div>
+
+    <!-- KAYIT FORMU -->
+    <div id="formKayit" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">RESTORAN ADI</label>
+        <input class="form-input" id="kayitRestoran" type="text" placeholder="Restoranınızın adı"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">E-POSTA</label>
+        <input class="form-input" id="kayitEmail" type="email" placeholder="restoran@email.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ŞİFRE</label>
+        <input class="form-input" id="kayitPassword" type="password" placeholder="En az 6 karakter"/>
+      </div>
+      <button class="submit-btn" id="kayitBtn" onclick="kayitOl()">Hesap Oluştur</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// SUPABASE BAĞLANTISI
+const SUPABASE_URL = 'https://jnwzikjupyztkzeejzwy.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_twuU8jsnmfqBhFMpxfUAzQ_0mHBXwa_';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// SAYFA YÜKLENINCE OTURUM KONTROL
+window.addEventListener('load', async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) showLoggedIn(session.user.email);
+});
+
+function switchTab(tab) {
+  document.getElementById('formGiris').style.display = tab === 'giris' ? 'block' : 'none';
+  document.getElementById('formKayit').style.display = tab === 'kayit' ? 'block' : 'none';
+  document.getElementById('tabGiris').className = 'tab' + (tab === 'giris' ? ' active' : '');
+  document.getElementById('tabKayit').className = 'tab' + (tab === 'kayit' ? ' active' : '');
+  hideAlert();
+}
+
+function showAlert(msg, type) {
+  const el = document.getElementById('alertBox');
+  el.textContent = msg;
+  el.className = 'alert ' + type + ' show';
+}
+function hideAlert() {
+  document.getElementById('alertBox').className = 'alert';
+}
+
+function setLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  if (loading) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span>Lütfen bekleyin...';
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = btnId === 'girisBtn' ? 'Giriş Yap' : 'Hesap Oluştur';
+  }
+}
+
+async function girisYap() {
+  const email = document.getElementById('girisEmail').value.trim();
+  const password = document.getElementById('girisPassword').value;
+  if (!email || !password) { showAlert('⚠️ E-posta ve şifre zorunludur.', 'error'); return; }
+  setLoading('girisBtn', true);
+  hideAlert();
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  setLoading('girisBtn', false);
+  if (error) {
+    if (error.message.includes('Invalid login')) showAlert('❌ E-posta veya şifre hatalı.', 'error');
+    else showAlert('❌ ' + error.message, 'error');
+  } else {
+    showLoggedIn(data.user.email);
+  }
+}
+
+async function kayitOl() {
+  const restoran = document.getElementById('kayitRestoran').value.trim();
+  const email = document.getElementById('kayitEmail').value.trim();
+  const password = document.getElementById('kayitPassword').value;
+  if (!restoran || !email || !password) { showAlert('⚠️ Tüm alanları doldurun.', 'error'); return; }
+  if (password.length < 6) { showAlert('⚠️ Şifre en az 6 karakter olmalı.', 'error'); return; }
+  setLoading('kayitBtn', true);
+  hideAlert();
+  const { data, error } = await sb.auth.signUp({
+    email, password,
+    options: { data: { restoran_adi: restoran } }
+  });
+  setLoading('kayitBtn', false);
+  if (error) {
+    if (error.message.includes('already registered')) showAlert('❌ Bu e-posta zaten kayıtlı.', 'error');
+    else showAlert('❌ ' + error.message, 'error');
+  } else {
+    showLoggedIn(data.user.email);
+  }
+}
+
+function showLoggedIn(email) {
+  document.getElementById('authForms').style.display = 'none';
+  document.getElementById('loggedIn').classList.add('show');
+  document.getElementById('userEmail').textContent = email;
+}
+
+function gotoDashboard() {
+  window.location.href = 'sofraQR-dashboard.html';
+}
+
+async function logout() {
+  await sb.auth.signOut();
+  document.getElementById('authForms').style.display = 'block';
+  document.getElementById('loggedIn').classList.remove('show');
+  showAlert('✅ Çıkış yapıldı.', 'success');
+}
+
+// Enter tuşu ile giriş
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('formGiris').style.display !== 'none') girisYap();
+    else kayitOl();
+  }
+});
+</script>
+</body>
+</html>

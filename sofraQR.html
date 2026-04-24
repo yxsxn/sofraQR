@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SofraQR – Restoranınız İçin Dijital Menü</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #FAF6F0;
+      --brown: #2C1A0E;
+      --amber: #C8852A;
+      --amber-light: #E8A84A;
+      --rust: #A63D2F;
+      --sage: #6B7E5E;
+      --warm-gray: #9A8F85;
+      --card-bg: #FFFCF7;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: var(--cream);
+      color: var(--brown);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 60px;
+      background: rgba(250,246,240,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(200,133,42,0.15);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--brown);
+      letter-spacing: -0.5px;
+    }
+    .nav-logo span { color: var(--amber); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--warm-gray);
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--brown); }
+    .nav-cta {
+      background: var(--amber);
+      color: white;
+      border: none;
+      padding: 11px 26px;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-cta:hover { background: var(--amber-light); transform: translateY(-1px); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 60px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 70% at 80% 50%, rgba(200,133,42,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 20% 80%, rgba(107,126,94,0.07) 0%, transparent 60%);
+    }
+    .hero-pattern {
+      position: absolute; right: -40px; top: 50%; transform: translateY(-50%);
+      width: 480px; height: 480px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(200,133,42,0.12);
+      z-index: 0;
+    }
+    .hero-pattern::before {
+      content: '';
+      position: absolute; inset: 40px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(200,133,42,0.1);
+    }
+    .hero-pattern::after {
+      content: '';
+      position: absolute; inset: 80px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(200,133,42,0.08);
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 620px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(200,133,42,0.1);
+      border: 1px solid rgba(200,133,42,0.25);
+      color: var(--amber);
+      padding: 7px 16px;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-badge::before { content: '✦'; font-size: 0.7rem; }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--amber);
+    }
+    .hero p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: var(--warm-gray);
+      margin-bottom: 40px;
+      max-width: 500px;
+      animation: fadeUp 0.6s 0.2s ease both;
+      font-weight: 300;
+    }
+    .hero-actions {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .btn-primary {
+      background: var(--brown);
+      color: var(--cream);
+      padding: 16px 36px;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(44,26,14,0.2);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(44,26,14,0.25); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--brown);
+      padding: 16px 36px;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      border: 1.5px solid rgba(44,26,14,0.2);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--amber); background: rgba(200,133,42,0.05); }
+
+    .hero-stats {
+      display: flex; gap: 40px; margin-top: 56px;
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+    .stat-item { }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--brown);
+      line-height: 1;
+    }
+    .stat-num span { color: var(--amber); }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--warm-gray);
+      margin-top: 4px;
+      font-weight: 400;
+    }
+
+    /* QR MOCKUP */
+    .hero-visual {
+      position: absolute; right: 80px; top: 50%; transform: translateY(-50%);
+      z-index: 1;
+      animation: fadeLeft 0.8s 0.3s ease both;
+    }
+    .qr-phone {
+      width: 260px;
+      background: var(--brown);
+      border-radius: 32px;
+      padding: 20px;
+      box-shadow: 0 40px 80px rgba(44,26,14,0.3), 0 0 0 1px rgba(255,255,255,0.05);
+      position: relative;
+    }
+    .phone-notch {
+      width: 80px; height: 8px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 100px;
+      margin: 0 auto 16px;
+    }
+    .phone-screen {
+      background: var(--cream);
+      border-radius: 20px;
+      padding: 20px;
+      min-height: 340px;
+    }
+    .phone-restaurant-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--brown);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .phone-tagline {
+      font-size: 0.65rem;
+      color: var(--warm-gray);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .phone-category {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--amber);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .phone-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(44,26,14,0.06);
+    }
+    .phone-item-name { font-size: 0.72rem; font-weight: 500; color: var(--brown); }
+    .phone-item-price { font-size: 0.72rem; font-weight: 600; color: var(--amber); }
+    .qr-box {
+      background: white;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .qr-grid {
+      width: 52px; height: 52px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(7, 1fr);
+      gap: 1.5px;
+      flex-shrink: 0;
+    }
+    .qr-cell {
+      border-radius: 1px;
+      background: var(--brown);
+    }
+    .qr-cell.empty { background: transparent; }
+    .qr-scan-text { font-size: 0.6rem; color: var(--warm-gray); line-height: 1.4; }
+    .qr-scan-text strong { color: var(--brown); display: block; font-size: 0.65rem; }
+
+    /* Float card */
+    .float-card {
+      position: absolute;
+      background: white;
+      border-radius: 16px;
+      padding: 12px 16px;
+      box-shadow: 0 8px 32px rgba(44,26,14,0.15);
+      font-size: 0.75rem;
+    }
+    .float-card-1 { top: -20px; right: -30px; }
+    .float-card-2 { bottom: 20px; left: -50px; }
+    .float-icon { font-size: 1.2rem; margin-bottom: 4px; }
+    .float-label { font-weight: 600; color: var(--brown); }
+    .float-sub { color: var(--warm-gray); font-size: 0.65rem; }
+
+    /* HOW IT WORKS */
+    .section { padding: 100px 60px; }
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--amber);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 1rem;
+      color: var(--warm-gray);
+      font-weight: 300;
+      max-width: 480px;
+      line-height: 1.7;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      margin-top: 64px;
+    }
+    .step {
+      position: relative;
+      padding: 32px 24px;
+      background: var(--card-bg);
+      border-radius: 20px;
+      border: 1px solid rgba(44,26,14,0.07);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .step:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(44,26,14,0.1); }
+    .step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: rgba(200,133,42,0.12);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .step-icon { font-size: 1.8rem; margin-bottom: 12px; }
+    .step h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--brown);
+    }
+    .step p { font-size: 0.85rem; color: var(--warm-gray); line-height: 1.6; font-weight: 300; }
+    .step-connector {
+      position: absolute; top: 50px; right: -16px; z-index: 2;
+      width: 32px; height: 2px;
+      background: linear-gradient(90deg, var(--amber), transparent);
+    }
+    .step:last-child .step-connector { display: none; }
+
+    /* FEATURES */
+    .features-section {
+      padding: 100px 60px;
+      background: var(--brown);
+      color: var(--cream);
+      position: relative;
+      overflow: hidden;
+    }
+    .features-section::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: rgba(200,133,42,0.07);
+    }
+    .features-section .section-title { color: var(--cream); }
+    .features-section .section-sub { color: rgba(250,246,240,0.6); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 64px;
+    }
+    .feature-card {
+      padding: 36px 28px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      transition: background 0.2s, transform 0.2s;
+      position: relative;
+      z-index: 1;
+    }
+    .feature-card:hover { background: rgba(255,255,255,0.08); transform: translateY(-4px); }
+    .feature-icon {
+      width: 52px; height: 52px;
+      background: rgba(200,133,42,0.15);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+    }
+    .feature-card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 10px;
+    }
+    .feature-card p {
+      font-size: 0.85rem;
+      color: rgba(250,246,240,0.55);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* PRICING */
+    .pricing-section { padding: 100px 60px; text-align: center; }
+    .pricing-cards {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-top: 60px;
+      flex-wrap: wrap;
+    }
+    .pricing-card {
+      background: var(--card-bg);
+      border: 1.5px solid rgba(44,26,14,0.1);
+      border-radius: 24px;
+      padding: 40px 36px;
+      width: 300px;
+      text-align: left;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(44,26,14,0.1); }
+    .pricing-card.featured {
+      background: var(--brown);
+      border-color: var(--brown);
+      color: var(--cream);
+      transform: scale(1.04);
+    }
+    .pricing-card.featured:hover { transform: scale(1.04) translateY(-4px); }
+    .pricing-badge {
+      display: inline-block;
+      background: var(--amber);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 100px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .pricing-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .pricing-desc { font-size: 0.85rem; color: var(--warm-gray); margin-bottom: 28px; font-weight: 300; }
+    .pricing-card.featured .pricing-desc { color: rgba(250,246,240,0.6); }
+    .pricing-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .pricing-price span { font-size: 1.2rem; font-weight: 400; }
+    .pricing-period { font-size: 0.8rem; color: var(--warm-gray); margin-bottom: 28px; }
+    .pricing-card.featured .pricing-period { color: rgba(250,246,240,0.5); }
+    .pricing-features { list-style: none; margin-bottom: 32px; }
+    .pricing-features li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.85rem;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(44,26,14,0.06);
+      font-weight: 400;
+    }
+    .pricing-card.featured .pricing-features li { border-color: rgba(255,255,255,0.07); }
+    .pricing-features li::before { content: '✓'; color: var(--sage); font-weight: 700; font-size: 0.9rem; }
+    .pricing-card.featured .pricing-features li::before { color: var(--amber-light); }
+    .pricing-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .pricing-btn:hover { transform: translateY(-1px); opacity: 0.9; }
+    .pricing-btn-outline {
+      background: transparent;
+      border: 1.5px solid rgba(44,26,14,0.2);
+      color: var(--brown);
+    }
+    .pricing-btn-filled { background: var(--amber); color: white; }
+
+    /* TESTIMONIALS */
+    .testimonials { padding: 100px 60px; background: #F5EFE6; }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 60px;
+    }
+    .testimonial {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid rgba(44,26,14,0.06);
+    }
+    .testimonial-stars { color: var(--amber); font-size: 0.9rem; margin-bottom: 16px; letter-spacing: 2px; }
+    .testimonial-text {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--brown);
+      margin-bottom: 20px;
+      font-weight: 300;
+      font-style: italic;
+    }
+    .testimonial-author { display: flex; align-items: center; gap: 12px; }
+    .author-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+    }
+    .author-name { font-size: 0.85rem; font-weight: 600; color: var(--brown); }
+    .author-rest { font-size: 0.75rem; color: var(--warm-gray); }
+
+    /* FAQ */
+    .faq-section { padding: 100px 60px; max-width: 800px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid rgba(44,26,14,0.1);
+      padding: 24px 0;
+      cursor: pointer;
+    }
+    .faq-question {
+      display: flex; justify-content: space-between; align-items: center;
+      font-weight: 600; font-size: 0.95rem;
+      color: var(--brown);
+    }
+    .faq-toggle {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(200,133,42,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      color: var(--amber);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .faq-answer {
+      font-size: 0.88rem;
+      color: var(--warm-gray);
+      line-height: 1.7;
+      font-weight: 300;
+      margin-top: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, margin-top 0.3s;
+    }
+    .faq-item.open .faq-answer { max-height: 200px; margin-top: 12px; }
+    .faq-item.open .faq-toggle { transform: rotate(45deg); }
+
+    /* CTA */
+    .cta-section {
+      padding: 100px 60px;
+      text-align: center;
+      background: linear-gradient(135deg, var(--amber) 0%, #A0621A 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .cta-section .section-title { color: white; position: relative; z-index: 1; }
+    .cta-section p { color: rgba(255,255,255,0.8); font-size: 1.05rem; margin: 16px 0 36px; font-weight: 300; position: relative; z-index: 1; }
+    .cta-btn {
+      background: white;
+      color: var(--amber);
+      padding: 18px 48px;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative; z-index: 1;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+
+    /* FOOTER */
+    footer {
+      background: var(--brown);
+      color: rgba(250,246,240,0.6);
+      padding: 60px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--cream);
+      margin-bottom: 12px;
+    }
+    .footer-logo span { color: var(--amber); }
+    .footer-desc { font-size: 0.85rem; line-height: 1.7; font-weight: 300; max-width: 260px; }
+    .footer-col h4 { color: var(--cream); font-size: 0.85rem; font-weight: 600; margin-bottom: 16px; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 8px; }
+    .footer-col ul li a {
+      text-decoration: none;
+      color: rgba(250,246,240,0.5);
+      font-size: 0.82rem;
+      transition: color 0.2s;
+    }
+    .footer-col ul li a:hover { color: var(--amber); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.78rem;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeLeft {
+      from { opacity: 0; transform: translate(30px, -50%); }
+      to { opacity: 1; transform: translate(0, -50%); }
+    }
+
+    /* SCROLL REVEAL */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 120px 24px 60px; }
+      .hero-visual { display: none; }
+      .section { padding: 60px 24px; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .features-section { padding: 60px 24px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .testimonials { padding: 60px 24px; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .pricing-section { padding: 60px 24px; }
+      .faq-section { padding: 60px 24px; }
+      .cta-section { padding: 60px 24px; }
+      footer { padding: 40px 24px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Sofra<span>QR</span></div>
+  <ul class="nav-links">
+    <li><a href="#nasil-calisir">Nasıl Çalışır?</a></li>
+    <li><a href="#ozellikler">Özellikler</a></li>
+    <li><a href="#fiyatlar">Fiyatlar</a></li>
+    <li><a href="#sss">SSS</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.location.href='sofraQR-auth.html'">Ücretsiz Dene</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">Türkiye'nin QR Menü Platformu</div>
+    <h1>Restoranınıza <em>dijital</em> bir soluk katın</h1>
+    <p>Saniyeler içinde QR menü oluşturun, gerçek zamanlı güncelleyin ve müşterilerinize modern bir deneyim yaşatın. Baskı masraflarına son.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="window.location.href='sofraQR-auth.html'">Hemen Başla — Ücretsiz</button>
+      <button class="btn-secondary" onclick="window.location.href='sofraQR-dashboard.html'">Demo Görüntüle →</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">5<span>dk</span></div>
+        <div class="stat-label">Ortalama kurulum süresi</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">500<span>+</span></div>
+        <div class="stat-label">Aktif restoran</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">%0</div>
+        <div class="stat-label">Baskı maliyeti</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phone Mockup -->
+  <div class="hero-visual">
+    <div style="position:relative;">
+      <div class="float-card float-card-1">
+        <div class="float-icon">📊</div>
+        <div class="float-label">Bugün 47 tarama</div>
+        <div class="float-sub">↑ %23 artış</div>
+      </div>
+      <div class="qr-phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-restaurant-name">Lezzet Durağı</div>
+          <div class="phone-tagline">Geleneksel Türk Mutfağı</div>
+          <div class="phone-category">🥗 Başlangıçlar</div>
+          <div class="phone-item"><span class="phone-item-name">Mercimek Çorbası</span><span class="phone-item-price">₺85</span></div>
+          <div class="phone-item"><span class="phone-item-name">Patlıcan Salatası</span><span class="phone-item-price">₺95</span></div>
+          <div class="phone-item"><span class="phone-item-name">Humus</span><span class="phone-item-price">₺90</span></div>
+          <div class="phone-category" style="margin-top:12px;">🍖 Ana Yemekler</div>
+          <div class="phone-item"><span class="phone-item-name">Kuzu Tandır</span><span class="phone-item-price">₺320</span></div>
+          <div class="phone-item"><span class="phone-item-name">Adana Kebap</span><span class="phone-item-price">₺285</span></div>
+          <div class="qr-box">
+            <div class="qr-grid" id="qrGrid"></div>
+            <div class="qr-scan-text">
+              <strong>QR Kodunuz</strong>
+              Masaya yerleştirin, müşteriler tarasın
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="float-card float-card-2">
+        <div class="float-icon">✅</div>
+        <div class="float-label">Menü güncellendi</div>
+        <div class="float-sub">Anlık yayınlandı</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="nasil-calisir">
+  <div class="section-label">Nasıl Çalışır?</div>
+  <div class="section-title">4 adımda dijital menünüz hazır</div>
+  <p class="section-sub">Teknik bilgiye gerek yok. Hesap oluşturun, menünüzü ekleyin, QR kodunuzu alın.</p>
+
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <div class="step-icon">🏪</div>
+      <h3>Hesap Oluşturun</h3>
+      <p>Restoranınızı birkaç dakikada kaydedin. Kredi kartı gerekmez.</p>
+      <div class="step-connector"></div>
+    </div>
+    <div class="step reveal" style="transition-delay:0.1s">
+      <div class="step-num">02</div>
+      <div class="step-icon">🍽️</div>
+      <h3>Menünüzü Kurun</h3>
+      <p>Kategoriler, fiyatlar, fotoğraflar ve açıklamalar ekleyin.</p>
+      <div class="step-connector"></div>
+    </div>
+    <div class="step reveal" style="transition-delay:0.2s">
+      <div class="step-num">03</div>
+      <div class="step-icon">📱</div>
+      <h3>QR Oluşturun</h3>
+      <p>Masalar için anında özelleştirilmiş QR kodları üretin.</p>
+      <div class="step-connector"></div>
+    </div>
+    <div class="step reveal" style="transition-delay:0.3s">
+      <div class="step-num">04</div>
+      <div class="step-icon">🎉</div>
+      <h3>Yayına Alın</h3>
+      <p>Yazdırın, masaya koyun. Müşterileriniz tarasın, menünüzü görsün.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="ozellikler">
+  <div class="section-label" style="color: var(--amber-light);">Özellikler</div>
+  <div class="section-title">İhtiyacınız olan her şey</div>
+  <p class="section-sub">Restoranınızı dijital çağa taşıyacak tüm araçlar tek platformda.</p>
+
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">📱</div>
+      <h3>QR Kod Oluşturucu</h3>
+      <p>Masalarınıza özel, yüksek çözünürlüklü QR kodları anında oluşturun. Yazdırmaya hazır format.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.1s">
+      <div class="feature-icon">✏️</div>
+      <h3>Gelişmiş Menü Editörü</h3>
+      <p>Kategoriler, görseller, açıklamalar ve fiyatları kolayca yönetin. Anlık güncellemeler.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.2s">
+      <div class="feature-icon">📊</div>
+      <h3>Gerçek Zamanlı Analitik</h3>
+      <p>Hangi yemekler en çok ilgi görüyor? Zirve saatler ne zaman? Veriye dayalı kararlar alın.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.3s">
+      <div class="feature-icon">🌍</div>
+      <h3>Çok Dilli Destek</h3>
+      <p>Türkçe, İngilizce, Arapça ve daha fazlası. Yabancı misafirleriniz için menüyü tercüme edin.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.4s">
+      <div class="feature-icon">🎨</div>
+      <h3>Tasarım Özelleştirme</h3>
+      <p>Markanıza özel renkler, logo ve şablonlar. Menünüz restoranınızın kimliğini yansıtsın.</p>
+    </div>
+    <div class="feature-card reveal" style="transition-delay:0.5s">
+      <div class="feature-icon">💰</div>
+      <h3>Çoklu Para Birimi</h3>
+      <p>TL, EUR, USD ve daha fazlasını destekliyoruz. Turistik bölgeler için ideal.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="fiyatlar">
+  <div class="section-label">Fiyatlar</div>
+  <div class="section-title">Şeffaf, basit fiyatlandırma</div>
+  <p class="section-sub" style="margin: 0 auto;">Gizli ücret yok. İstediğiniz zaman iptal edebilirsiniz.</p>
+
+  <div class="pricing-cards">
+    <div class="pricing-card reveal">
+      <div class="pricing-name">Başlangıç</div>
+      <div class="pricing-desc">Tek şubeye başlamak isteyenler için</div>
+      <div class="pricing-price"><span>₺</span>299</div>
+      <div class="pricing-period">/ aylık</div>
+      <ul class="pricing-features">
+        <li>1 Restoran</li>
+        <li>QR Kod Oluşturucu</li>
+        <li>Dijital Menü</li>
+        <li>Temel Analitik</li>
+        <li>E-posta Destek</li>
+      </ul>
+      <button class="pricing-btn pricing-btn-outline">Başla</button>
+    </div>
+
+    <div class="pricing-card featured reveal" style="transition-delay:0.15s">
+      <div class="pricing-badge">En Popüler</div>
+      <div class="pricing-name" style="color:var(--cream)">Profesyonel</div>
+      <div class="pricing-desc">Büyüyen restoranlar için eksiksiz paket</div>
+      <div class="pricing-price" style="color:var(--cream)"><span>₺</span>599</div>
+      <div class="pricing-period">/ aylık</div>
+      <ul class="pricing-features">
+        <li>3 Restoran</li>
+        <li>QR Kod Oluşturucu</li>
+        <li>Gelişmiş Menü Editörü</li>
+        <li>Çok Dilli Destek</li>
+        <li>Tasarım Özelleştirme</li>
+        <li>Gelişmiş Analitik</li>
+        <li>Öncelikli Destek</li>
+      </ul>
+      <button class="pricing-btn pricing-btn-filled">Hemen Başla</button>
+    </div>
+
+    <div class="pricing-card reveal" style="transition-delay:0.3s">
+      <div class="pricing-name">Kurumsal</div>
+      <div class="pricing-desc">Zincir restoranlar ve büyük işletmeler için</div>
+      <div class="pricing-price"><span style="font-size:1.2rem">₺</span>1.499</div>
+      <div class="pricing-period">/ aylık</div>
+      <ul class="pricing-features">
+        <li>Sınırsız Restoran</li>
+        <li>Tüm Pro Özellikler</li>
+        <li>Özel Entegrasyonlar</li>
+        <li>API Erişimi</li>
+        <li>7/24 Telefon Destek</li>
+        <li>Özel Onboarding</li>
+      </ul>
+      <button class="pricing-btn pricing-btn-outline">Teklif Alın</button>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div style="text-align:center;">
+    <div class="section-label">Müşterilerimiz</div>
+    <div class="section-title">Onlar ne diyor?</div>
+  </div>
+  <div class="testimonials-grid" style="margin-top:60px;">
+    <div class="testimonial reveal">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-text">"Menüyü güncellemek artık 2 dakika sürüyor. Eskiden matbaacıyı aramak, beklemek, para ödemek zorundaydık. SofraQR hayat kurtardı."</div>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background: var(--amber);">M</div>
+        <div>
+          <div class="author-name">Mehmet Yılmaz</div>
+          <div class="author-rest">Yılmaz Kebapçısı, Ankara</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial reveal" style="transition-delay:0.1s">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-text">"Turistik bölgedeyiz, İngilizce ve Arapça menü desteği işimizi çok kolaylaştırdı. Yabancı müşteriler artık rahatça sipariş veriyor."</div>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background: var(--sage);">A</div>
+        <div>
+          <div class="author-name">Ayşe Kara</div>
+          <div class="author-rest">Boğaz Restaurant, İstanbul</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial reveal" style="transition-delay:0.2s">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-text">"Analitik özelliği sayesinde hangi yemeklerin satıldığını görüp menümü optimize ettim. Ciromu %30 artırdım."</div>
+      <div class="testimonial-author">
+        <div class="author-avatar" style="background: var(--rust);">K</div>
+        <div>
+          <div class="author-name">Kemal Arslan</div>
+          <div class="author-rest">Arslan Pide Salonu, İzmir</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="sss">
+  <div style="text-align:center; margin-bottom:60px;">
+    <div class="section-label">SSS</div>
+    <div class="section-title">Sık sorulan sorular</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">SofraQR nedir? <div class="faq-toggle">+</div></div>
+    <div class="faq-answer">SofraQR, restoranların QR kod tabanlı dijital menü oluşturmasını, yönetmesini ve analiz etmesini sağlayan bir platformdur. Müşterileriniz QR kodu okutarak menünüzü telefonlarında görür.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-question">Müşterilerin uygulama indirmesi gerekiyor mu? <div class="faq-toggle">+</div></div>
+    <div class="faq-answer">Hayır. Müşterileriniz sadece telefon kameralarını QR koda tutarlar, menü otomatik olarak tarayıcıda açılır. Uygulama indirme gerekmez.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-question">Menüyü güncelleyince QR kod değişiyor mu? <div class="faq-toggle">+</div></div>
+    <div class="faq-answer">Hayır. QR kod sabit kalır, menü içeriği anında güncellenir. Bir kez yazdırırsınız, sonsuza kadar kullanırsınız.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-question">Kaç dil destekleniyor? <div class="faq-toggle">+</div></div>
+    <div class="faq-answer">Türkçe, İngilizce, Arapça, Almanca, Rusça ve daha fazlası. Desteklenmeyen bir dil için bize ulaşabilirsiniz.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-question">İptal edebilir miyim? <div class="faq-toggle">+</div></div>
+    <div class="faq-answer">Evet, istediğiniz zaman aboneliğinizi iptal edebilirsiniz. Herhangi bir ceza veya gizli ücret yoktur.</div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-title">Restoranınızı dijitalleştirmeye hazır mısınız?</div>
+  <p>Ücretsiz deneme ile hemen başlayın. Kredi kartı gerekmez.</p>
+  <button class="cta-btn" onclick="window.location.href='sofraQR-auth.html'">Ücretsiz Hesap Oluştur →</button>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">Sofra<span>QR</span></div>
+      <p class="footer-desc">Türkiye'deki restoranları dijital çağa taşıyoruz. Kolay, hızlı ve uygun fiyatlı QR menü çözümleri.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Ürün</h4>
+      <ul>
+        <li><a href="#">Özellikler</a></li>
+        <li><a href="#">Fiyatlar</a></li>
+        <li><a href="#">Demo</a></li>
+        <li><a href="#">Güncellemeler</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Şirket</h4>
+      <ul>
+        <li><a href="#">Hakkımızda</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">İletişim</a></li>
+        <li><a href="#">Kariyer</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Destek</h4>
+      <ul>
+        <li><a href="#">Yardım Merkezi</a></li>
+        <li><a href="#">SSS</a></li>
+        <li><a href="#">Gizlilik Politikası</a></li>
+        <li><a href="#">Kullanım Koşulları</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 SofraQR. Tüm hakları saklıdır.</span>
+    <span>🇹🇷 Türkiye'de yapıldı</span>
+  </div>
+</footer>
+
+<script>
+  // QR Grid
+  const grid = document.getElementById('qrGrid');
+  const pattern = [
+    1,1,1,0,1,1,1,
+    1,0,1,0,1,0,1,
+    1,1,1,0,1,1,1,
+    0,0,0,0,0,1,0,
+    1,1,1,0,0,0,1,
+    1,0,0,0,1,0,1,
+    1,1,1,0,0,1,1
+  ];
+  pattern.forEach(v => {
+    const cell = document.createElement('div');
+    cell.className = 'qr-cell' + (v ? '' : ' empty');
+    grid.appendChild(cell);
+  });
+
+  // FAQ
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-question').addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
