@@ -35,7 +35,7 @@ body.dark-mode .detay-modal{background:#111820;}
 body.dark-mode .detay-ad{color:#E4F0F4;}
 body.dark-mode .detay-kapat{background:rgba(58,175,206,0.15);}
 
-body{font-family:'Montserrat',sans-serif;background:#E4E4E4;color:var(--brown);min-height:100vh;transition:background 0.2s,color 0.2s;}
+body{font-family:'Montserrat',sans-serif;background:white;color:var(--brown);min-height:100vh;transition:background 0.2s,color 0.2s;}
 
 .header{background:white;color:#2C3E2D;padding:18px 20px 14px;text-align:center;position:sticky;top:0;z-index:50;border-bottom:none;transition:background 0.2s,color 0.2s;}
 .header-name{font-family:var(--t-font-kat);font-size:1.4rem;font-weight:900;line-height:1.1;color:#2C3E2D;}
@@ -135,17 +135,17 @@ body.dark-mode .geri-btn:active{transform:scale(0.97);}
 </div>
 
 <div class="oneri-wrap" id="oneriWrap" style="display:none;">
-  <div id="oneriFrame" style="background:#E4E4E4;border-radius:12px;padding:12px;border:0.5px solid rgba(0,0,0,0.07);">
+  <div id="oneriFrame" style="background:white;border-radius:12px;padding:12px;border:0.5px solid rgba(0,0,0,0.07);">
     <div style="font-family:'Oswald',sans-serif;font-size:0.95rem;font-weight:600;color:#2C3E2D;margin-bottom:10px;padding-left:2px;">Sizin İçin Seçtiklerimiz</div>
     <div class="oneri-scroll" id="oneriScroll"></div>
   </div>
 </div>
 
-<div style="padding:0 12px 12px;"><div id="oneriFrame" style="background:#E4E4E4;border-radius:12px;padding:12px;border:0.5px solid rgba(0,0,0,0.07);"><div class="kat-liste" id="katListe">
+<div style="padding:0 12px 12px;"><div id="oneriFrame" style="background:white;border-radius:12px;padding:12px;border:0.5px solid rgba(0,0,0,0.07);"><div class="kat-liste" id="katListe">
   <div class="loading-wrap"><div class="spinner"></div></div>
 </div>
 
-<div class="urunsayfa" id="urunSayfa" style="padding:4px 2px;background:#E4E4E4;">
+<div class="urunsayfa" id="urunSayfa" style="padding:4px 2px;background:white;">
   <div class="geri-btn" onclick="geriKategorilere()">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
     Kategoriler
@@ -201,7 +201,7 @@ async function temaUygula(){
   root.setProperty('--t-bg', s.bg);
   // Dark mode aktifse body bg'yi değiştirme
   if(!document.body.classList.contains('dark-mode')){
-    document.body.style.background = s.bg;
+    document.body.style.background = 'white';
   }
   root.setProperty('--t-header', s.header);
   root.setProperty('--t-accent', s.accent);
@@ -404,8 +404,8 @@ async function footerYukle(){
   const fCard = isDark ? '#162028' : 'white';
   const fCardBorder = isDark ? 'rgba(58,175,206,0.1)' : 'rgba(0,0,0,0.06)';
   f.innerHTML = `
-    <div style="background:${fBg};margin-top:0;overflow:hidden;border-top:none;padding:12px;">
-      <div style="background:${fFrame};border-radius:12px;padding:18px 16px;border:0.5px solid ${fCardBorder};">
+    <div style="background:#F2F2F2;margin-top:0;overflow:hidden;border-top:none;padding:12px;">
+      <div style="background:white;border-radius:12px;padding:18px 16px;border:0.5px solid ${fCardBorder};">
         <div style="text-align:center;margin-bottom:16px;">
           <div style="font-size:16px;font-weight:700;color:${fText};font-family:'Playfair Display',serif;">${data.ad||''}</div>
           <div style="font-size:10px;color:#C8603C;margin-top:3px;letter-spacing:1px;">${data.adres||''}</div>
