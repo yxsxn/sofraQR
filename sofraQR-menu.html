@@ -96,15 +96,15 @@ body.dark-mode .oneri-item{box-shadow:0 2px 8px rgba(0,0,0,0.3);}
 .kat-kart-icerik{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
 
 .urunsayfa{display:none;width:100%;box-sizing:border-box;}
-body:not(.dark-mode) .urunsayfa{background:#F2F2F2;padding:8px;}
-body.dark-mode .urunsayfa{background:#111820;padding:8px;}
-.geri-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;font-size:0.85rem;font-weight:500;color:#7A9E78;cursor:pointer;background:#F2F2F2;border-radius:100px;border:0.5px solid rgba(0,0,0,0.08);margin:6px 2px 2px;transition:all 0.15s;user-select:none;}
+body:not(.dark-mode) .urunsayfa{background:#F2F2F2;padding:0;border-radius:12px;}
+body.dark-mode .urunsayfa{background:#111820;padding:0;border-radius:12px;}
+.geri-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;font-size:0.85rem;font-weight:500;color:#7A9E78;cursor:pointer;background:#F2F2F2;border-radius:0 0 12px 0;border-right:0.5px solid rgba(0,0,0,0.08);border-bottom:0.5px solid rgba(0,0,0,0.08);margin:0;transition:all 0.15s;user-select:none;}
 .geri-btn:hover{background:#E8E8E8;color:#2C3E2D;}
 .geri-btn:active{transform:scale(0.97);background:#E0E0E0;}
-body.dark-mode .geri-btn{background:#111820;color:rgba(228,240,244,0.5);border-color:rgba(58,175,206,0.15);}
+body.dark-mode .geri-btn{background:#111820;color:rgba(228,240,244,0.5);border-right:0.5px solid rgba(58,175,206,0.15);border-bottom:0.5px solid rgba(58,175,206,0.15);}
 body.dark-mode .geri-btn:hover{background:#162028;color:#E4F0F4;}
 body.dark-mode .geri-btn:active{transform:scale(0.97);}
-.urun-baslik{padding:18px 20px 10px;font-family:var(--t-font-kat);font-size:1.25rem;font-weight:700;}
+.urun-baslik{padding:10px 12px 8px;font-family:var(--t-font-kat);font-size:1.25rem;font-weight:700;}
 body.dark-mode .urun-baslik{color:#E4F0F4 !important;background:#111820;}
 
 .item-card{background:#F7F7F7;border-radius:12px;display:flex;align-items:stretch;margin:5px 2px;overflow:visible;border:0.5px solid rgba(0,0,0,0.06);cursor:pointer;transition:transform 0.1s;height:90px;box-shadow:0 2px 8px rgba(0,0,0,0.07);position:relative;}
@@ -188,7 +188,7 @@ body.dark-mode #footerAlani > div > div{background:#111820 !important;}
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
     Kategoriler
   </div>
-  <div class="urun-baslik" id="urunKatBaslik" style="padding:8px 16px 4px;"></div>
+  <div class="urun-baslik" id="urunKatBaslik"></div>
   <div id="urunListe"></div>
 </div></div></div>
 
@@ -301,6 +301,7 @@ function kategoriAcVeKaydet(katAd){
 
 function kategoriListesiGoster(){
   document.getElementById('katListe').style.display='block';
+  document.getElementById('katFrame').style.padding='12px';
   const uspg=document.getElementById('urunSayfa');
   uspg.style.display='none';
 
@@ -374,14 +375,19 @@ function oneriGoster(){
 function kategoriAc(katAd){
   document.getElementById('katListe').style.display='none';
   document.getElementById('oneriWrap').style.display='none';
+  const kf=document.getElementById('katFrame');
+  kf.style.padding='0';
+  kf.style.borderRadius='12px';
+  kf.style.overflow='hidden';
   const isDark=document.body.classList.contains('dark-mode');
   const usp=document.getElementById('urunSayfa');
   usp.style.display='block';
   usp.style.minHeight='auto';
+  usp.style.padding='0';
   document.getElementById('urunKatBaslik').textContent=katAd;
   const filtered=tumYemekler.filter(y=>y.cat===katAd);
   const liste=document.getElementById('urunListe');
-  liste.style.padding='4px';
+  liste.style.padding='4px 8px 8px';
   if(!filtered.length){
     liste.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--warm-gray);">Bu kategoride ürün yok.</div>';
     return;
@@ -408,6 +414,7 @@ function kategoriAc(katAd){
 
 function geriKategorilere(){
   document.getElementById('katListe').style.display='block';
+  document.getElementById('katFrame').style.padding='12px';
   const uspg=document.getElementById('urunSayfa');
   uspg.style.display='none';
 
