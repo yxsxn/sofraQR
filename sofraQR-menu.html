@@ -31,8 +31,6 @@ body.dark-mode #footerAlani svg[stroke="#C8603C"]{stroke:#3AAFCE !important;}
 body.dark-mode #footerAlani .icon-box{background:rgba(58,175,206,0.12) !important;}
 
 body.dark-mode .footer-logo{color:rgba(228,240,244,0.3);}
-body.dark-mode .detay-modal{background:#111820;}
-body.dark-mode .detay-ad{color:#E4F0F4;}
 body.dark-mode .detay-kapat{background:rgba(58,175,206,0.15);}
 
 body{font-family:'Montserrat',sans-serif;background:white;color:var(--brown);min-height:100vh;transition:background 0.2s,color 0.2s;}
@@ -66,11 +64,11 @@ body.dark-mode .oneri-baslik-text{color:var(--brown);}
 body.dark-mode .kat-kart-overlay{background:rgba(0,0,0,0.45);}
 body.dark-mode .kat-kart-ad{color:white;text-shadow:0 2px 8px rgba(0,0,0,0.6);}
 body.dark-mode #urunCerceve{background:#111820 !important;border-color:rgba(58,175,206,0.1) !important;}
-body.dark-mode .item-card{background:#111820 !important;border-color:rgba(58,175,206,0.08) !important;}
+body.dark-mode .item-card{background:#1C2535 !important;border-color:rgba(58,175,206,0.08) !important;}
 body.dark-mode .item-foto{background:#111820 !important;}
 body.dark-mode .item-foto-emoji{background:#111820 !important;}
 body.dark-mode .item-foto img{background:#111820;}
-body.dark-mode .urun-baslik{color:#E4F0F4 !important;}
+body.dark-mode .urun-baslik{color:#E4F0F4 !important;background:#0A0F14;}
 
 body.dark-mode #oneriFrame{background:#111820 !important;border-color:rgba(58,175,206,0.1) !important;}
 body.dark-mode #katFrame{background:#111820 !important;border-color:rgba(58,175,206,0.1) !important;}
@@ -82,7 +80,7 @@ body.dark-mode .oneri-item{box-shadow:0 2px 8px rgba(0,0,0,0.3);}
 .geri-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;font-size:0.85rem;font-weight:500;color:#7A9E78;cursor:pointer;background:#F2F2F2;border-radius:100px;border:0.5px solid rgba(0,0,0,0.08);margin:6px 2px 2px;transition:all 0.15s;user-select:none;}
 .geri-btn:hover{background:#E8E8E8;color:#2C3E2D;}
 .geri-btn:active{transform:scale(0.97);background:#E0E0E0;}
-body.dark-mode .geri-btn{background:#111820;color:rgba(228,240,244,0.5);border-color:rgba(58,175,206,0.15);}
+body.dark-mode .geri-btn{background:#0A0F14;color:rgba(228,240,244,0.5);border-color:rgba(58,175,206,0.15);}
 body.dark-mode .geri-btn:hover{background:#162028;color:#E4F0F4;}
 body.dark-mode .geri-btn:active{transform:scale(0.97);}
 .urun-baslik{padding:18px 20px 10px;font-family:var(--t-font-kat);font-size:1.25rem;font-weight:700;}
@@ -106,18 +104,32 @@ body.dark-mode .geri-btn:active{transform:scale(0.97);}
 .detay-modal{background:white;border-radius:20px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto;position:relative;}
 .detay-foto{width:100%;height:220px;object-fit:cover;display:block;border-radius:20px 20px 0 0;}
 .detay-emoji{width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:5rem;background:#F2F2F2;border-radius:20px 20px 0 0;}
-.detay-body{padding:16px;}
+.detay-body{padding:16px;background:linear-gradient(to top,#F5F5F5 0%,white 100%);}
 .detay-header{margin-bottom:8px;}
 .detay-ad{font-family:var(--t-font-urun);font-size:1.4rem;font-weight:700;color:#2C3E2D;margin-bottom:6px;}
 .detay-fiyat{font-family:var(--t-font-fiyat);font-size:1.2rem;font-weight:700;color:#C8603C;}
 .detay-aciklama{font-size:0.88rem;color:#7A9E78;line-height:1.6;margin-bottom:12px;}
 .detay-kapat{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.4);border:none;cursor:pointer;color:white;font-size:14px;display:flex;align-items:center;justify-content:center;z-index:2;}
-body.dark-mode .detay-ad{color:#E4F0F4;}
-body.dark-mode .detay-emoji{background:#162028;}
+
 
 .footer{margin-top:8px;}
 .footer-logo{font-family:'Playfair Display',serif;font-size:0.82rem;font-weight:700;color:var(--warm-gray);}
 .footer-logo span{color:var(--amber);}
+
+body.dark-mode .detay-modal{background:#111820 !important;}
+body.dark-mode .detay-body{background:linear-gradient(to top,#0A0F14 0%,#111820 100%) !important;}
+body.dark-mode .detay-ad{color:#E4F0F4 !important;}
+body.dark-mode .detay-aciklama{color:rgba(228,240,244,0.5) !important;}
+body.dark-mode .detay-fiyat{color:#3AAFCE !important;}
+body.dark-mode .detay-emoji{background:#162028 !important;}
+body.dark-mode .detay-foto{filter:brightness(0.9);}
+body.dark-mode .urunsayfa{background:#0A0F14 !important;}
+body.dark-mode .urun-baslik{color:#E4F0F4 !important;background:#0A0F14;}
+body.dark-mode .item-name{color:#E4F0F4 !important;}
+body.dark-mode .item-desc{color:rgba(228,240,244,0.4) !important;}
+body.dark-mode .item-fiyat{color:#3AAFCE !important;}
+body.dark-mode #footerAlani > div{background:#0A0F14 !important;}
+body.dark-mode #footerAlani > div > div{background:#111820 !important;}
 </style>
 </head>
 <body>
@@ -339,7 +351,7 @@ function kategoriAc(katAd){
   document.getElementById('oneriWrap').style.display='none';
   const usp=document.getElementById('urunSayfa');
   usp.style.display='block';
-  usp.style.background='#F2F2F2';
+  usp.style.background=document.body.classList.contains('dark-mode')?'#0A0F14':'white';
   usp.style.padding='8px';
   usp.style.minHeight='auto';
   document.getElementById('urunKatBaslik').textContent=katAd;
@@ -349,7 +361,7 @@ function kategoriAc(katAd){
     liste.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--warm-gray);">Bu kategoride ürün yok.</div>';
     return;
   }
-  liste.style.background='#F2F2F2';
+  liste.style.background=document.body.classList.contains('dark-mode')?'#0A0F14':'#F2F2F2';
   liste.style.padding='4px';
   liste.innerHTML='';
   filtered.forEach(item=>{
