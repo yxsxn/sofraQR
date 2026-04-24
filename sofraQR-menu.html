@@ -6,19 +6,23 @@
 <title>Dijital Menü</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <script>
-// Sayfa yüklenmeden önce temayı anında uygula — flash engellemek için
 (function(){
   var t = localStorage.getItem('sofraQR-menu-tema');
-  if(t === 'koyu') document.documentElement.classList.add('dark-mode-init');
+  if(t === 'koyu'){
+    document.documentElement.classList.add('dark-mode-init');
+    document.addEventListener('DOMContentLoaded', function(){
+      document.body.classList.add('dark-mode');
+      document.body.style.background = '#0A0F14';
+    });
+  }
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-/* Flash önleme — JS yüklenmeden önce */
-html.dark-mode-init body{background:#0A0F14 !important;}
-html.dark-mode-init .header{background:#0A0F14 !important;}
-html.dark-mode-init #oneriFrame{background:#111820 !important;}
+html.dark-mode-init body{background:#0A0F14 !important;color:#E4F0F4;}
+html.dark-mode-init .header{background:#0A0F14 !important;color:#E4F0F4;}
 html.dark-mode-init #katFrame{background:#111820 !important;}
-html.dark-mode-init .urunsayfa{background:#0A0F14 !important;}
+html.dark-mode-init #oneriFrame{background:#111820 !important;}
 </style>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
