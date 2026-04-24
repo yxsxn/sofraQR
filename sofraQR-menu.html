@@ -107,10 +107,10 @@ body.dark-mode .geri-btn:active{transform:scale(0.97);}
 .detay-body{padding:12px;}
 .detay-info-cerceve{background:linear-gradient(to top,#F5F5F5 0%,white 100%);border-radius:0 0 14px 14px;padding:14px;border:0.5px solid rgba(0,0,0,0.07);}
 body.dark-mode .detay-info-cerceve{background:linear-gradient(to top,#0A0F14 0%,#111820 100%) !important;border-color:rgba(58,175,206,0.1);}
-.detay-header{margin-bottom:8px;}
-.detay-ad{font-family:var(--t-font-urun);font-size:1.4rem;font-weight:700;color:#2C3E2D;margin-bottom:6px;}
-.detay-fiyat{font-family:var(--t-font-fiyat);font-size:1.2rem;font-weight:700;color:#C8603C;}
-.detay-aciklama{font-size:0.88rem;color:#7A9E78;line-height:1.6;margin-bottom:12px;}
+.detay-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.detay-ad{font-family:var(--t-font-urun);font-size:1.4rem;font-weight:700;color:#2C3E2D;flex:1;}
+.detay-fiyat{font-family:var(--t-font-fiyat);font-size:1rem;font-weight:700;color:#C8603C;background:rgba(200,96,60,0.08);border:1px solid rgba(200,96,60,0.25);border-radius:8px;padding:5px 12px;white-space:nowrap;margin-left:10px;align-self:center;}
+.detay-aciklama{font-size:0.88rem;color:#7A9E78;line-height:1.6;}
 .detay-kapat{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.4);border:none;cursor:pointer;color:white;font-size:14px;display:flex;align-items:center;justify-content:center;z-index:2;}
 
 
@@ -122,7 +122,7 @@ body.dark-mode .detay-modal{background:#111820 !important;}
 body.dark-mode .detay-body{background:linear-gradient(to top,#0A0F14 0%,#111820 100%) !important;}
 body.dark-mode .detay-ad{color:#E4F0F4 !important;}
 body.dark-mode .detay-aciklama{color:rgba(228,240,244,0.5) !important;}
-body.dark-mode .detay-fiyat{color:#3AAFCE !important;}
+body.dark-mode .detay-fiyat{color:#3AAFCE !important;background:rgba(58,175,206,0.08) !important;border-color:rgba(58,175,206,0.25) !important;}
 body.dark-mode .detay-emoji{background:#162028 !important;}
 body.dark-mode .detay-foto{filter:brightness(0.9);}
 body.dark-mode .urunsayfa{background:#0A0F14 !important;}
@@ -181,9 +181,9 @@ body.dark-mode #footerAlani > div > div{background:#111820 !important;}
       <div class="detay-info-cerceve">
         <div class="detay-header">
           <div class="detay-ad" id="detayAd"></div>
+          <div class="detay-fiyat" id="detayFiyat"></div>
         </div>
         <div class="detay-aciklama" id="detayAciklama"></div>
-        <div class="detay-fiyat" id="detayFiyat"></div>
       </div>
     </div>
   </div>
