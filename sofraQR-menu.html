@@ -103,15 +103,17 @@ body.dark-mode .geri-btn:active{transform:scale(0.97);}
 
 .detay-overlay{position:fixed;inset:0;background:rgba(44,26,14,0.6);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:20px;}
 .detay-overlay.open{display:flex;}
-.detay-modal{background:white;border-radius:24px;width:100%;max-width:400px;max-height:85vh;overflow-y:auto;position:relative;}
-.detay-foto{width:100%;height:200px;object-fit:cover;border-radius:24px 24px 0 0;display:block;}
-.detay-emoji{width:100%;height:150px;display:flex;align-items:center;justify-content:center;font-size:4rem;background:linear-gradient(135deg,#F5E6D0,#E8C99A);border-radius:24px 24px 0 0;}
-.detay-body{padding:20px;}
-.detay-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
-.detay-ad{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;flex:1;}
-.detay-fiyat{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--amber);margin-left:12px;}
-.detay-aciklama{font-size:0.88rem;color:var(--warm-gray);line-height:1.6;}
-.detay-kapat{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.35);border:none;cursor:pointer;color:white;font-size:0.9rem;display:flex;align-items:center;justify-content:center;}
+.detay-modal{background:white;border-radius:20px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto;position:relative;}
+.detay-foto{width:100%;height:220px;object-fit:cover;display:block;border-radius:20px 20px 0 0;}
+.detay-emoji{width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:5rem;background:#F2F2F2;border-radius:20px 20px 0 0;}
+.detay-body{padding:16px;}
+.detay-header{margin-bottom:8px;}
+.detay-ad{font-family:var(--t-font-urun);font-size:1.4rem;font-weight:700;color:#2C3E2D;margin-bottom:6px;}
+.detay-fiyat{font-family:var(--t-font-fiyat);font-size:1.2rem;font-weight:700;color:#C8603C;}
+.detay-aciklama{font-size:0.88rem;color:#7A9E78;line-height:1.6;margin-bottom:12px;}
+.detay-kapat{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.4);border:none;cursor:pointer;color:white;font-size:14px;display:flex;align-items:center;justify-content:center;z-index:2;}
+body.dark-mode .detay-ad{color:#E4F0F4;}
+body.dark-mode .detay-emoji{background:#162028;}
 
 .footer{margin-top:8px;}
 .footer-logo{font-family:'Playfair Display',serif;font-size:0.82rem;font-weight:700;color:var(--warm-gray);}
@@ -164,9 +166,9 @@ body.dark-mode .geri-btn:active{transform:scale(0.97);}
     <div class="detay-body">
       <div class="detay-header">
         <div class="detay-ad" id="detayAd"></div>
-        <div class="detay-fiyat" id="detayFiyat"></div>
       </div>
       <div class="detay-aciklama" id="detayAciklama"></div>
+      <div class="detay-fiyat" id="detayFiyat"></div>
     </div>
   </div>
 </div>
